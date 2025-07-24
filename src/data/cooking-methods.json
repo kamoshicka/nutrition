@@ -124,5 +124,181 @@
     "nutritionRetention": 95,
     "difficulty": "easy",
     "cookingTime": 10
+  },
+  {
+    "id": "boiled",
+    "name": "茹で料理",
+    "description": "沸騰したお湯で食材を茹でる基本的な調理法",
+    "steps": [
+      "大きめの鍋にたっぷりの水を入れる",
+      "塩を少量加えて沸騰させる",
+      "食材を加える",
+      "指定時間茹でる",
+      "ザルにあげて水気を切る",
+      "必要に応じて調味料を加える"
+    ],
+    "nutritionRetention": 70,
+    "difficulty": "easy",
+    "cookingTime": 15
+  },
+  {
+    "id": "smoothie",
+    "name": "スムージー",
+    "description": "ミキサーで撹拌して飲みやすくする調理法",
+    "steps": [
+      "食材を適切なサイズに切る",
+      "ミキサーに食材を入れる",
+      "水や牛乳を加える",
+      "なめらかになるまで撹拌する",
+      "味を確認して調整する",
+      "グラスに注いで完成"
+    ],
+    "nutritionRetention": 90,
+    "difficulty": "easy",
+    "cookingTime": 5
+  },
+  {
+    "id": "roasted",
+    "name": "ロースト",
+    "description": "乾熱で食材を焼いて香ばしさを引き出す調理法",
+    "steps": [
+      "オーブンを200℃で予熱する",
+      "食材に軽く油をまぶす",
+      "オーブン皿に並べる",
+      "15-20分焼く",
+      "途中で裏返す",
+      "きつね色になったら完成"
+    ],
+    "nutritionRetention": 85,
+    "difficulty": "easy",
+    "cookingTime": 25
+  },
+  {
+    "id": "porridge",
+    "name": "お粥・ポリッジ",
+    "description": "穀物を水や牛乳で煮込んで消化しやすくする調理法",
+    "steps": [
+      "穀物を軽く洗う",
+      "鍋に穀物と水を入れる",
+      "弱火でじっくり煮込む",
+      "時々かき混ぜる",
+      "好みの固さになったら完成",
+      "トッピングを加える"
+    ],
+    "nutritionRetention": 80,
+    "difficulty": "easy",
+    "cookingTime": 30
+  },
+  {
+    "id": "soup",
+    "name": "スープ",
+    "description": "水分と一緒に煮込んで栄養を溶け出させる調理法",
+    "steps": [
+      "食材を適切なサイズに切る",
+      "鍋に油を熱して食材を炒める",
+      "水またはブイヨンを加える",
+      "弱火で煮込む",
+      "調味料で味を整える",
+      "器に盛って完成"
+    ],
+    "nutritionRetention": 85,
+    "difficulty": "medium",
+    "cookingTime": 40
+  },
+  {
+    "id": "fermented",
+    "name": "発酵",
+    "description": "微生物の力で食材を発酵させる伝統的な保存・調理法",
+    "steps": [
+      "食材をよく洗って準備する",
+      "塩や発酵菌を加える",
+      "密閉容器に入れる",
+      "適切な温度で保管する",
+      "発酵が進むのを待つ",
+      "完成したら冷蔵保存"
+    ],
+    "nutritionRetention": 90,
+    "difficulty": "hard",
+    "cookingTime": 1440
+  },
+  {
+    "id": "pickled",
+    "name": "漬け物",
+    "description": "塩や酢で漬けて保存性を高める調理法",
+    "steps": [
+      "食材を適切なサイズに切る",
+      "塩をまぶして水分を出す",
+      "調味液を準備する",
+      "食材を調味液に漬ける",
+      "重しをのせて漬け込む",
+      "味がなじんだら完成"
+    ],
+    "nutritionRetention": 85,
+    "difficulty": "medium",
+    "cookingTime": 120
+  },
+  {
+    "id": "juice",
+    "name": "ジュース",
+    "description": "食材を絞って液体にする調理法",
+    "steps": [
+      "食材をよく洗う",
+      "ジューサーに入れる",
+      "絞って液体を抽出する",
+      "必要に応じてこす",
+      "すぐに飲む",
+      "残りは冷蔵保存"
+    ],
+    "nutritionRetention": 75,
+    "difficulty": "easy",
+    "cookingTime": 10
+  },
+  {
+    "id": "stewed",
+    "name": "煮込み料理",
+    "description": "長時間煮込んで食材を柔らかくする調理法",
+    "steps": [
+      "食材を一口大に切る",
+      "鍋で食材を軽く炒める",
+      "調味料と水を加える",
+      "弱火でじっくり煮込む",
+      "アクを取りながら調理する",
+      "食材が柔らかくなったら完成"
+    ],
+    "nutritionRetention": 80,
+    "difficulty": "medium",
+    "cookingTime": 60
+  },
+  {
+    "id": "scrambled",
+    "name": "スクランブル",
+    "description": "卵などをかき混ぜながら加熱する調理法",
+    "steps": [
+      "卵をボウルで溶きほぐす",
+      "フライパンを中火で熱する",
+      "バターまたは油を加える",
+      "溶き卵を流し入れる",
+      "かき混ぜながら加熱する",
+      "半熟状態で火を止める"
+    ],
+    "nutritionRetention": 85,
+    "difficulty": "easy",
+    "cookingTime": 5
+  },
+  {
+    "id": "poached",
+    "name": "ポーチ",
+    "description": "沸騰しない程度の湯で優しく加熱する調理法",
+    "steps": [
+      "鍋に水を入れて80-90℃に温める",
+      "少量の酢を加える",
+      "食材をそっと湯に入れる",
+      "温度を保ちながら加熱する",
+      "指定時間経ったら取り出す",
+      "水気を切って完成"
+    ],
+    "nutritionRetention": 90,
+    "difficulty": "medium",
+    "cookingTime": 15
   }
 ]

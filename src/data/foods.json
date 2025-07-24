@@ -119,5 +119,741 @@
     ],
     "precautions": ["胆石がある場合は避ける", "血液凝固阻害薬との併用注意", "鉄分の吸収を阻害する可能性がある"],
     "cookingMethodIds": ["curry", "tea", "supplement"]
+  },
+  {
+    "id": "spinach",
+    "name": "ほうれん草",
+    "description": "鉄分と葉酸が豊富な緑黄色野菜",
+    "nutritionalInfo": {
+      "calories": 20,
+      "protein": 2.2,
+      "carbohydrates": 3.1,
+      "fat": 0.4,
+      "vitamins": ["ビタミンK", "ビタミンA", "葉酸", "ビタミンC"],
+      "minerals": ["鉄", "マグネシウム", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "貧血",
+        "effect": "鉄分と葉酸が造血機能をサポートし、貧血を予防・改善する",
+        "scientificBasis": "ヘム鉄と非ヘム鉄の両方を含み、ビタミンCとの相乗効果で鉄分吸収が促進される",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["シュウ酸が多いため、腎結石の既往がある場合は注意"],
+    "cookingMethodIds": ["boiled", "stir-fry", "salad"]
+  },
+  {
+    "id": "broccoli",
+    "name": "ブロッコリー",
+    "description": "ビタミンCが豊富で抗酸化作用の高い野菜",
+    "nutritionalInfo": {
+      "calories": 33,
+      "protein": 4.3,
+      "carbohydrates": 5.2,
+      "fat": 0.5,
+      "vitamins": ["ビタミンC", "ビタミンK", "葉酸"],
+      "minerals": ["カリウム", "鉄", "カルシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "がん予防",
+        "effect": "スルフォラファンなどの成分ががん細胞の増殖を抑制する",
+        "scientificBasis": "イソチオシアネート類が解毒酵素を活性化し、発がん物質を無毒化することが研究で示されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["甲状腺機能低下症の場合は大量摂取を避ける"],
+    "cookingMethodIds": ["steamed", "boiled", "stir-fry"]
+  },
+  {
+    "id": "sweet-potato",
+    "name": "さつまいも",
+    "description": "食物繊維とβ-カロテンが豊富な根菜",
+    "nutritionalInfo": {
+      "calories": 132,
+      "protein": 1.4,
+      "carbohydrates": 31.5,
+      "fat": 0.2,
+      "vitamins": ["ビタミンA", "ビタミンC", "ビタミンE"],
+      "minerals": ["カリウム", "マンガン", "銅"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "便秘",
+        "effect": "豊富な食物繊維が腸内環境を改善し、便通を促進する",
+        "scientificBasis": "水溶性・不溶性両方の食物繊維を含み、腸内細菌叢の改善効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["糖質が多いため、糖尿病の場合は摂取量に注意"],
+    "cookingMethodIds": ["baked", "steamed", "grilled"]
+  },
+  {
+    "id": "avocado",
+    "name": "アボカド",
+    "description": "良質な脂質と食物繊維が豊富な果実",
+    "nutritionalInfo": {
+      "calories": 187,
+      "protein": 1.9,
+      "carbohydrates": 6.2,
+      "fat": 18.7,
+      "vitamins": ["ビタミンK", "葉酸", "ビタミンE"],
+      "minerals": ["カリウム", "マグネシウム", "銅"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "心疾患",
+        "effect": "一価不飽和脂肪酸が悪玉コレステロールを下げ、心臓病リスクを減少させる",
+        "scientificBasis": "オレイン酸が豊富で、地中海食研究において心血管疾患予防効果が実証されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["カロリーが高いため、摂取量に注意"],
+    "cookingMethodIds": ["raw", "salad", "smoothie"]
+  },
+  {
+    "id": "blueberry",
+    "name": "ブルーベリー",
+    "description": "アントシアニンが豊富で目の健康に良い果実",
+    "nutritionalInfo": {
+      "calories": 57,
+      "protein": 0.7,
+      "carbohydrates": 14.5,
+      "fat": 0.3,
+      "vitamins": ["ビタミンC", "ビタミンK"],
+      "minerals": ["マンガン", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "目の健康",
+        "effect": "アントシアニンが網膜の血流を改善し、視力低下を予防する",
+        "scientificBasis": "アントシアニンがロドプシンの再合成を促進し、夜間視力の改善効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["特になし"],
+    "cookingMethodIds": ["raw", "smoothie", "jam"]
+  },
+  {
+    "id": "green-tea",
+    "name": "緑茶",
+    "description": "カテキンが豊富で抗酸化作用の高い飲み物",
+    "nutritionalInfo": {
+      "calories": 2,
+      "protein": 0.2,
+      "carbohydrates": 0.3,
+      "fat": 0,
+      "vitamins": ["ビタミンC"],
+      "minerals": ["カリウム", "カルシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "がん予防",
+        "effect": "エピガロカテキンガレートががん細胞の増殖を抑制する",
+        "scientificBasis": "カテキン類の抗酸化作用とがん細胞のアポトーシス誘導効果が多数の研究で確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["カフェインを含むため、妊娠中や就寝前は控える"],
+    "cookingMethodIds": ["tea", "powder", "ice-tea"]
+  },
+  {
+    "id": "tomato",
+    "name": "トマト",
+    "description": "リコピンが豊富で抗酸化作用の高い野菜",
+    "nutritionalInfo": {
+      "calories": 19,
+      "protein": 0.7,
+      "carbohydrates": 4.7,
+      "fat": 0.1,
+      "vitamins": ["ビタミンC", "ビタミンK", "葉酸"],
+      "minerals": ["カリウム", "マンガン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "前立腺がん予防",
+        "effect": "リコピンが前立腺がんのリスクを低下させる",
+        "scientificBasis": "リコピンの抗酸化作用が前立腺がん細胞の増殖を抑制することが疫学研究で示されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["特になし"],
+    "cookingMethodIds": ["raw", "cooked", "sauce"]
+  },
+  {
+    "id": "yogurt",
+    "name": "ヨーグルト",
+    "description": "プロバイオティクスが豊富で腸内環境を改善する発酵食品",
+    "nutritionalInfo": {
+      "calories": 62,
+      "protein": 3.6,
+      "carbohydrates": 4.9,
+      "fat": 3.0,
+      "vitamins": ["ビタミンB12", "リボフラビン"],
+      "minerals": ["カルシウム", "リン", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "腸内環境改善",
+        "effect": "善玉菌が腸内フローラを改善し、免疫力を向上させる",
+        "scientificBasis": "乳酸菌やビフィズス菌が腸内環境を整え、免疫機能の向上効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["乳糖不耐症の場合は注意"],
+    "cookingMethodIds": ["raw", "smoothie", "frozen"]
+  },
+  {
+    "id": "walnuts",
+    "name": "くるみ",
+    "description": "オメガ3脂肪酸が豊富なナッツ類",
+    "nutritionalInfo": {
+      "calories": 654,
+      "protein": 15.2,
+      "carbohydrates": 13.7,
+      "fat": 65.2,
+      "vitamins": ["ビタミンE", "葉酸"],
+      "minerals": ["マンガン", "銅", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "脳の健康",
+        "effect": "オメガ3脂肪酸が脳機能を改善し、認知症を予防する",
+        "scientificBasis": "α-リノレン酸が脳の神経伝達を改善し、記憶力向上効果が研究で確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["高カロリーのため、1日25g程度に制限"],
+    "cookingMethodIds": ["raw", "roasted", "salad"]
+  },
+  {
+    "id": "oats",
+    "name": "オーツ麦",
+    "description": "β-グルカンが豊富で血糖値の安定に効果的な穀物",
+    "nutritionalInfo": {
+      "calories": 380,
+      "protein": 13.2,
+      "carbohydrates": 69.1,
+      "fat": 7.0,
+      "vitamins": ["ビタミンB1", "ナイアシン"],
+      "minerals": ["マンガン", "リン", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "糖尿病",
+        "effect": "β-グルカンが血糖値の急激な上昇を抑制する",
+        "scientificBasis": "水溶性食物繊維のβ-グルカンが糖の吸収を緩やかにし、血糖値安定効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["グルテン過敏症の場合は注意"],
+    "cookingMethodIds": ["porridge", "granola", "smoothie"]
+  },
+  {
+    "id": "quinoa",
+    "name": "キヌア",
+    "description": "完全タンパク質を含むスーパーフード",
+    "nutritionalInfo": {
+      "calories": 368,
+      "protein": 14.1,
+      "carbohydrates": 64.2,
+      "fat": 6.1,
+      "vitamins": ["葉酸", "ビタミンE"],
+      "minerals": ["マンガン", "リン", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "筋肉の健康",
+        "effect": "必須アミノ酸をバランス良く含み、筋肉の維持・増強をサポートする",
+        "scientificBasis": "9種類の必須アミノ酸を全て含む完全タンパク質で、筋タンパク質合成に効果的",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["サポニンを含むため、よく洗ってから調理する"],
+    "cookingMethodIds": ["boiled", "salad", "pilaf"]
+  },
+  {
+    "id": "chia-seeds",
+    "name": "チアシード",
+    "description": "オメガ3脂肪酸と食物繊維が豊富な種子",
+    "nutritionalInfo": {
+      "calories": 486,
+      "protein": 16.5,
+      "carbohydrates": 42.1,
+      "fat": 30.7,
+      "vitamins": ["ナイアシン", "チアミン"],
+      "minerals": ["カルシウム", "リン", "マンガン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "心疾患",
+        "effect": "オメガ3脂肪酸が心血管の健康をサポートする",
+        "scientificBasis": "α-リノレン酸が炎症を抑制し、心疾患リスクを低下させることが研究で示されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["水分と一緒に摂取し、十分に膨らませてから食べる"],
+    "cookingMethodIds": ["soaked", "smoothie", "pudding"]
+  },
+  {
+    "id": "kale",
+    "name": "ケール",
+    "description": "栄養価が非常に高い緑黄色野菜",
+    "nutritionalInfo": {
+      "calories": 49,
+      "protein": 4.3,
+      "carbohydrates": 8.8,
+      "fat": 0.9,
+      "vitamins": ["ビタミンK", "ビタミンA", "ビタミンC"],
+      "minerals": ["カルシウム", "カリウム", "マンガン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "骨の健康",
+        "effect": "ビタミンKとカルシウムが骨密度を維持し、骨粗鬆症を予防する",
+        "scientificBasis": "ビタミンKが骨タンパク質の合成を促進し、カルシウムの骨への沈着を助ける",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["ワルファリン服用中は医師に相談"],
+    "cookingMethodIds": ["salad", "smoothie", "chips"]
+  },
+  {
+    "id": "dark-chocolate",
+    "name": "ダークチョコレート",
+    "description": "フラボノイドが豊富で心血管に良い効果をもたらす",
+    "nutritionalInfo": {
+      "calories": 546,
+      "protein": 7.8,
+      "carbohydrates": 45.9,
+      "fat": 31.3,
+      "vitamins": ["ビタミンK"],
+      "minerals": ["鉄", "マグネシウム", "銅"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "高血圧",
+        "effect": "フラボノイドが血管を拡張し、血圧を下げる",
+        "scientificBasis": "カカオフラバノールが一酸化窒素の産生を促進し、血管拡張効果が確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["カカオ70%以上のものを選び、1日25g程度に制限"],
+    "cookingMethodIds": ["raw", "melted", "dessert"]
+  },
+  {
+    "id": "olive-oil",
+    "name": "オリーブオイル",
+    "description": "一価不飽和脂肪酸が豊富で心臓に良い油",
+    "nutritionalInfo": {
+      "calories": 884,
+      "protein": 0,
+      "carbohydrates": 0,
+      "fat": 100,
+      "vitamins": ["ビタミンE", "ビタミンK"],
+      "minerals": []
+    },
+    "healthBenefits": [
+      {
+        "condition": "心疾患",
+        "effect": "オレイン酸が悪玉コレステロールを下げ、心疾患リスクを減少させる",
+        "scientificBasis": "地中海食研究において、エクストラバージンオリーブオイルの心血管保護効果が実証されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["高カロリーのため、1日大さじ2杯程度に制限"],
+    "cookingMethodIds": ["raw", "cooking", "dressing"]
+  },
+  {
+    "id": "green-leafy-vegetables",
+    "name": "緑葉野菜",
+    "description": "葉酸とビタミンKが豊富な野菜群",
+    "nutritionalInfo": {
+      "calories": 23,
+      "protein": 2.9,
+      "carbohydrates": 3.6,
+      "fat": 0.4,
+      "vitamins": ["ビタミンK", "葉酸", "ビタミンA"],
+      "minerals": ["鉄", "カルシウム", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "認知症予防",
+        "effect": "葉酸とビタミンKが脳機能を保護し、認知症リスクを低下させる",
+        "scientificBasis": "葉酸が神経伝達物質の合成に関与し、認知機能維持効果が疫学研究で確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["ワルファリン服用中は医師に相談"],
+    "cookingMethodIds": ["salad", "stir-fry", "smoothie"]
+  },
+  {
+    "id": "beans",
+    "name": "豆類",
+    "description": "植物性タンパク質と食物繊維が豊富",
+    "nutritionalInfo": {
+      "calories": 333,
+      "protein": 21.4,
+      "carbohydrates": 56.7,
+      "fat": 2.0,
+      "vitamins": ["葉酸", "ビタミンB1"],
+      "minerals": ["鉄", "マグネシウム", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "糖尿病",
+        "effect": "食物繊維が血糖値の上昇を緩やかにし、インスリン感受性を改善する",
+        "scientificBasis": "水溶性食物繊維が糖の吸収を遅らせ、血糖値安定効果が多数の研究で確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["消化不良を起こしやすい場合は、よく煮て摂取する"],
+    "cookingMethodIds": ["boiled", "stewed", "salad"]
+  },
+  {
+    "id": "berries",
+    "name": "ベリー類",
+    "description": "アントシアニンと抗酸化物質が豊富な果実群",
+    "nutritionalInfo": {
+      "calories": 57,
+      "protein": 0.7,
+      "carbohydrates": 14.5,
+      "fat": 0.3,
+      "vitamins": ["ビタミンC", "ビタミンK"],
+      "minerals": ["マンガン", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "記憶力向上",
+        "effect": "アントシアニンが脳の血流を改善し、記憶力を向上させる",
+        "scientificBasis": "フラボノイドが神経可塑性を高め、学習・記憶機能の改善効果が確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["特になし"],
+    "cookingMethodIds": ["raw", "smoothie", "jam"]
+  },
+  {
+    "id": "citrus-fruits",
+    "name": "柑橘類",
+    "description": "ビタミンCとフラボノイドが豊富な果実群",
+    "nutritionalInfo": {
+      "calories": 47,
+      "protein": 0.9,
+      "carbohydrates": 11.8,
+      "fat": 0.1,
+      "vitamins": ["ビタミンC", "葉酸"],
+      "minerals": ["カリウム", "カルシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "免疫力向上",
+        "effect": "ビタミンCが免疫システムを強化し、感染症への抵抗力を高める",
+        "scientificBasis": "ビタミンCが白血球の機能を向上させ、抗体産生を促進することが確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["胃酸過多の場合は空腹時の摂取を避ける"],
+    "cookingMethodIds": ["raw", "juice", "zest"]
+  },
+  {
+    "id": "mushrooms",
+    "name": "きのこ類",
+    "description": "β-グルカンと低カロリーで栄養価の高い食材",
+    "nutritionalInfo": {
+      "calories": 22,
+      "protein": 3.1,
+      "carbohydrates": 4.9,
+      "fat": 0.3,
+      "vitamins": ["ビタミンD", "ナイアシン"],
+      "minerals": ["セレン", "カリウム", "銅"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "免疫力向上",
+        "effect": "β-グルカンが免疫システムを活性化し、がん予防効果も期待される",
+        "scientificBasis": "多糖類のβ-グルカンがマクロファージを活性化し、免疫機能向上効果が確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["野生のきのこは避け、市販品を使用する"],
+    "cookingMethodIds": ["stir-fry", "grilled", "soup"]
+  },
+  {
+    "id": "seaweed",
+    "name": "海藻類",
+    "description": "ヨウ素とミネラルが豊富な海の野菜",
+    "nutritionalInfo": {
+      "calories": 35,
+      "protein": 1.9,
+      "carbohydrates": 8.8,
+      "fat": 0.1,
+      "vitamins": ["ビタミンK", "葉酸"],
+      "minerals": ["ヨウ素", "カルシウム", "鉄"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "甲状腺機能",
+        "effect": "ヨウ素が甲状腺ホルモンの合成に必要で、代謝を正常に保つ",
+        "scientificBasis": "ヨウ素は甲状腺ホルモンT3、T4の構成成分で、基礎代謝の調節に不可欠",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["甲状腺疾患がある場合は医師に相談"],
+    "cookingMethodIds": ["salad", "soup", "dried"]
+  },
+  {
+    "id": "eggs",
+    "name": "卵",
+    "description": "完全タンパク質とコリンが豊富な食材",
+    "nutritionalInfo": {
+      "calories": 151,
+      "protein": 12.3,
+      "carbohydrates": 0.3,
+      "fat": 10.3,
+      "vitamins": ["ビタミンB12", "リボフラビン", "ビタミンD"],
+      "minerals": ["セレン", "リン", "鉄"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "脳の健康",
+        "effect": "コリンが神経伝達物質の合成に関与し、記憶力を向上させる",
+        "scientificBasis": "コリンがアセチルコリンの前駆体として脳機能に重要な役割を果たすことが確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["コレステロールが高い場合は摂取量に注意"],
+    "cookingMethodIds": ["boiled", "scrambled", "raw"]
+  },
+  {
+    "id": "lean-meat",
+    "name": "赤身肉",
+    "description": "高品質なタンパク質と鉄分が豊富",
+    "nutritionalInfo": {
+      "calories": 250,
+      "protein": 26.0,
+      "carbohydrates": 0,
+      "fat": 15.0,
+      "vitamins": ["ビタミンB12", "ナイアシン", "ビタミンB6"],
+      "minerals": ["鉄", "亜鉛", "セレン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "貧血",
+        "effect": "ヘム鉄が効率的に吸収され、鉄欠乏性貧血を改善する",
+        "scientificBasis": "ヘム鉄は非ヘム鉄より吸収率が高く、貧血改善効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["週3回程度に制限し、加工肉は避ける"],
+    "cookingMethodIds": ["grilled", "stewed", "roasted"]
+  },
+  {
+    "id": "whole-grains",
+    "name": "全粒穀物",
+    "description": "食物繊維とB群ビタミンが豊富な穀物",
+    "nutritionalInfo": {
+      "calories": 340,
+      "protein": 12.0,
+      "carbohydrates": 72.0,
+      "fat": 2.5,
+      "vitamins": ["ビタミンB1", "ナイアシン", "葉酸"],
+      "minerals": ["マンガン", "セレン", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "心疾患",
+        "effect": "食物繊維がコレステロールを下げ、心疾患リスクを減少させる",
+        "scientificBasis": "水溶性食物繊維がコレステロールの吸収を阻害し、心血管疾患予防効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["グルテン過敏症の場合は注意"],
+    "cookingMethodIds": ["boiled", "bread", "porridge"]
+  },
+  {
+    "id": "fermented-foods",
+    "name": "発酵食品",
+    "description": "プロバイオティクスが豊富で腸内環境を改善",
+    "nutritionalInfo": {
+      "calories": 80,
+      "protein": 4.0,
+      "carbohydrates": 8.0,
+      "fat": 3.0,
+      "vitamins": ["ビタミンK2", "ビタミンB12"],
+      "minerals": ["カルシウム", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "腸内環境改善",
+        "effect": "善玉菌が腸内フローラを改善し、消化機能を向上させる",
+        "scientificBasis": "乳酸菌などのプロバイオティクスが腸内環境を整え、免疫機能向上効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["塩分が多い場合があるため、摂取量に注意"],
+    "cookingMethodIds": ["raw", "fermented", "pickled"]
+  },
+  {
+    "id": "herbs-spices",
+    "name": "ハーブ・スパイス",
+    "description": "抗酸化物質と抗炎症成分が豊富",
+    "nutritionalInfo": {
+      "calories": 250,
+      "protein": 8.0,
+      "carbohydrates": 50.0,
+      "fat": 5.0,
+      "vitamins": ["ビタミンA", "ビタミンC", "ビタミンK"],
+      "minerals": ["鉄", "カルシウム", "マンガン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "炎症抑制",
+        "effect": "抗炎症成分が慢性炎症を抑制し、生活習慣病を予防する",
+        "scientificBasis": "クルクミン、ジンゲロールなどの成分が炎症性サイトカインを抑制することが確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["大量摂取は避け、料理の風味付け程度に使用"],
+    "cookingMethodIds": ["seasoning", "tea", "extract"]
+  },
+  {
+    "id": "cruciferous-vegetables",
+    "name": "アブラナ科野菜",
+    "description": "グルコシノレートが豊富でがん予防効果が期待される",
+    "nutritionalInfo": {
+      "calories": 25,
+      "protein": 3.0,
+      "carbohydrates": 5.0,
+      "fat": 0.3,
+      "vitamins": ["ビタミンC", "ビタミンK", "葉酸"],
+      "minerals": ["カルシウム", "鉄", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "がん予防",
+        "effect": "イソチオシアネートががん細胞の増殖を抑制する",
+        "scientificBasis": "グルコシノレートから生成されるイソチオシアネートが解毒酵素を活性化し、がん予防効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["甲状腺機能低下症の場合は大量摂取を避ける"],
+    "cookingMethodIds": ["steamed", "stir-fry", "raw"]
+  },
+  {
+    "id": "root-vegetables",
+    "name": "根菜類",
+    "description": "食物繊維とβ-カロテンが豊富",
+    "nutritionalInfo": {
+      "calories": 80,
+      "protein": 1.5,
+      "carbohydrates": 18.0,
+      "fat": 0.2,
+      "vitamins": ["ビタミンA", "ビタミンC"],
+      "minerals": ["カリウム", "マンガン", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "消化器系の健康",
+        "effect": "食物繊維が腸内環境を改善し、便秘を解消する",
+        "scientificBasis": "不溶性食物繊維が腸の蠕動運動を促進し、便通改善効果が確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["糖質が多いため、糖尿病の場合は摂取量に注意"],
+    "cookingMethodIds": ["boiled", "roasted", "stewed"]
+  },
+  {
+    "id": "seeds-nuts",
+    "name": "種子・ナッツ類",
+    "description": "良質な脂質とビタミンEが豊富",
+    "nutritionalInfo": {
+      "calories": 550,
+      "protein": 20.0,
+      "carbohydrates": 20.0,
+      "fat": 45.0,
+      "vitamins": ["ビタミンE", "ビタミンB1", "葉酸"],
+      "minerals": ["マグネシウム", "亜鉛", "鉄"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "心疾患",
+        "effect": "不飽和脂肪酸が悪玉コレステロールを下げ、心疾患リスクを減少させる",
+        "scientificBasis": "ナッツ類の摂取が心血管疾患死亡率を低下させることが大規模疫学研究で確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["高カロリーのため、1日25g程度に制限"],
+    "cookingMethodIds": ["raw", "roasted", "butter"]
+  },
+  {
+    "id": "lean-fish",
+    "name": "白身魚",
+    "description": "低脂肪で高品質なタンパク質が豊富",
+    "nutritionalInfo": {
+      "calories": 100,
+      "protein": 20.0,
+      "carbohydrates": 0,
+      "fat": 2.0,
+      "vitamins": ["ビタミンB12", "ナイアシン"],
+      "minerals": ["セレン", "リン", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "筋肉の健康",
+        "effect": "高品質なタンパク質が筋肉の維持・増強をサポートする",
+        "scientificBasis": "必須アミノ酸をバランス良く含み、筋タンパク質合成に効果的であることが確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["特になし"],
+    "cookingMethodIds": ["steamed", "grilled", "poached"]
+  },
+  {
+    "id": "colorful-vegetables",
+    "name": "色とりどりの野菜",
+    "description": "様々な抗酸化物質とファイトケミカルが豊富",
+    "nutritionalInfo": {
+      "calories": 30,
+      "protein": 2.0,
+      "carbohydrates": 7.0,
+      "fat": 0.2,
+      "vitamins": ["ビタミンA", "ビタミンC", "ビタミンK"],
+      "minerals": ["カリウム", "マグネシウム", "鉄"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "老化防止",
+        "effect": "多様な抗酸化物質が活性酸素を除去し、老化を遅らせる",
+        "scientificBasis": "カロテノイド、フラボノイドなどの抗酸化物質が細胞の酸化ストレスを軽減することが確認されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["特になし"],
+    "cookingMethodIds": ["raw", "steamed", "roasted"]
+  },
+  {
+    "id": "water",
+    "name": "水",
+    "description": "生命維持に不可欠で、体内の様々な機能をサポート",
+    "nutritionalInfo": {
+      "calories": 0,
+      "protein": 0,
+      "carbohydrates": 0,
+      "fat": 0,
+      "vitamins": [],
+      "minerals": ["カルシウム", "マグネシウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "全身の健康",
+        "effect": "体内の水分バランスを保ち、代謝機能を正常に維持する",
+        "scientificBasis": "適切な水分摂取が腎機能、循環機能、体温調節に重要であることが確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["1日2-3リットルを目安に、過剰摂取は避ける"],
+    "cookingMethodIds": ["raw", "tea", "infused"]
   }
 ]

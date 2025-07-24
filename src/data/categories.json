@@ -3,30 +3,96 @@
     "id": "diabetes",
     "name": "糖尿病",
     "description": "血糖値の管理に効果的な食材を含むカテゴリ",
-    "foodIds": ["bitter-melon", "cinnamon", "green-tea", "oats"]
+    "foodIds": ["bitter-melon", "green-tea", "oats", "beans", "whole-grains", "chia-seeds"]
   },
   {
     "id": "hypertension",
     "name": "高血圧",
     "description": "血圧の調整に役立つ食材を含むカテゴリ",
-    "foodIds": ["garlic", "celery", "banana", "spinach"]
+    "foodIds": ["garlic", "spinach", "dark-chocolate", "citrus-fruits", "seeds-nuts"]
   },
   {
     "id": "heart-disease",
     "name": "心疾患",
     "description": "心臓の健康をサポートする食材を含むカテゴリ",
-    "foodIds": ["salmon", "walnuts", "olive-oil", "avocado"]
+    "foodIds": ["salmon", "walnuts", "olive-oil", "avocado", "chia-seeds", "whole-grains", "seeds-nuts"]
   },
   {
     "id": "digestive-health",
     "name": "消化器系の健康",
     "description": "消化機能の改善に効果的な食材を含むカテゴリ",
-    "foodIds": ["ginger", "yogurt", "papaya", "fennel"]
+    "foodIds": ["ginger", "yogurt", "sweet-potato", "fermented-foods", "root-vegetables"]
   },
   {
     "id": "immune-system",
     "name": "免疫力向上",
     "description": "免疫システムを強化する食材を含むカテゴリ",
-    "foodIds": ["citrus-fruits", "mushrooms", "turmeric", "garlic"]
+    "foodIds": ["citrus-fruits", "mushrooms", "turmeric", "garlic", "green-tea"]
+  },
+  {
+    "id": "brain-health",
+    "name": "脳の健康",
+    "description": "認知機能と記憶力をサポートする食材を含むカテゴリ",
+    "foodIds": ["walnuts", "blueberry", "eggs", "green-leafy-vegetables", "berries", "lean-fish"]
+  },
+  {
+    "id": "bone-health",
+    "name": "骨の健康",
+    "description": "骨密度の維持と骨粗鬆症予防に効果的な食材を含むカテゴリ",
+    "foodIds": ["kale", "yogurt", "seaweed", "spinach"]
+  },
+  {
+    "id": "eye-health",
+    "name": "目の健康",
+    "description": "視力保護と目の疲労軽減に効果的な食材を含むカテゴリ",
+    "foodIds": ["blueberry", "berries", "colorful-vegetables", "spinach"]
+  },
+  {
+    "id": "cancer-prevention",
+    "name": "がん予防",
+    "description": "がんのリスクを低下させる食材を含むカテゴリ",
+    "foodIds": ["broccoli", "green-tea", "tomato", "cruciferous-vegetables", "mushrooms"]
+  },
+  {
+    "id": "anemia",
+    "name": "貧血",
+    "description": "鉄分補給と造血機能をサポートする食材を含むカテゴリ",
+    "foodIds": ["spinach", "lean-meat", "seaweed"]
+  },
+  {
+    "id": "constipation",
+    "name": "便秘",
+    "description": "腸内環境改善と便通促進に効果的な食材を含むカテゴリ",
+    "foodIds": ["sweet-potato", "beans", "root-vegetables", "whole-grains"]
+  },
+  {
+    "id": "muscle-health",
+    "name": "筋肉の健康",
+    "description": "筋肉の維持・増強をサポートする食材を含むカテゴリ",
+    "foodIds": ["quinoa", "eggs", "lean-meat", "lean-fish"]
+  },
+  {
+    "id": "anti-aging",
+    "name": "老化防止",
+    "description": "抗酸化作用により老化を遅らせる食材を含むカテゴリ",
+    "foodIds": ["colorful-vegetables", "berries", "green-tea", "olive-oil"]
+  },
+  {
+    "id": "thyroid-health",
+    "name": "甲状腺機能",
+    "description": "甲状腺の健康をサポートする食材を含むカテゴリ",
+    "foodIds": ["seaweed"]
+  },
+  {
+    "id": "inflammation",
+    "name": "炎症抑制",
+    "description": "慢性炎症を抑制する食材を含むカテゴリ",
+    "foodIds": ["turmeric", "herbs-spices", "olive-oil", "salmon"]
+  },
+  {
+    "id": "hydration",
+    "name": "水分補給",
+    "description": "体内の水分バランスを保つ食材を含むカテゴリ",
+    "foodIds": ["water", "citrus-fruits", "colorful-vegetables"]
   }
 ]
