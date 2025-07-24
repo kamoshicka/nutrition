@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import SearchBar from './SearchBar';
 import { useSearchHistory } from '@/lib/search-history';
+import UserMenu from '../auth/UserMenu';
 
 /**
  * GlobalHeader component with integrated search functionality
@@ -213,6 +214,10 @@ export default function GlobalHeader() {
                                                                 </div>
                                                         )}
                                                 </div>
+                                        </div>
+
+                                        <div className="ml-4">
+                                                <UserMenu />
                                         </div>
                                 </div>
                         </div>

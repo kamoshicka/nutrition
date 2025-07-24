@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import GlobalHeader from '@/components/ui/GlobalHeader'
 import { SearchHistoryProvider } from '@/lib/search-history'
+import { Providers } from './providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -50,8 +51,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
       <body className={`${inter.className} h-full`}>
-        <SearchHistoryProvider>
-          <div className="min-h-screen flex flex-col bg-gray-50">
+        <Providers>
+          <SearchHistoryProvider>
+            <div className="min-h-screen flex flex-col bg-gray-50">
             <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-white focus:z-50">
               メインコンテンツにスキップ
             </a>
@@ -66,8 +68,9 @@ export default function RootLayout({
                 </p>
               </div>
             </footer>
-          </div>
-        </SearchHistoryProvider>
+            </div>
+          </SearchHistoryProvider>
+        </Providers>
       </body>
     </html>
   )

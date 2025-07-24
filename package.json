@@ -11,12 +11,19 @@
     "cypress:headless": "cypress run",
     "e2e": "start-server-and-test dev http://localhost:3000 cypress",
     "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless",
-    "check-a11y": "node scripts/check-accessibility.js"
+    "check-a11y": "node scripts/check-accessibility.js",
+    "init-db": "node scripts/init-db.js"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.2",
     "next": "14.0.0",
+    "next-auth": "^4.24.11",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "zod": "^4.0.8"
   },
   "devDependencies": {
     "@axe-core/puppeteer": "^4.10.2",
