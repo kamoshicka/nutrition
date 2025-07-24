@@ -16,12 +16,22 @@
 npm install
 ```
 
-2. 開発サーバーの起動:
+2. 環境変数の設定:
+`.env.local` ファイルを作成し、楽天APIキーを設定してください：
+```bash
+RAKUTEN_APPLICATION_ID=your_rakuten_application_id_here
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+楽天APIキーは[楽天ウェブサービス](https://webservice.rakuten.co.jp/)で取得できます。
+詳細な取得手順は[docs/rakuten-api-setup.md](docs/rakuten-api-setup.md)を参照してください。
+
+3. 開発サーバーの起動:
 ```bash
 npm run dev
 ```
 
-3. ブラウザで http://localhost:3000 を開く
+4. ブラウザで http://localhost:3000 を開く
 
 ## プロジェクト構造
 
@@ -43,6 +53,7 @@ src/
 - カテゴリ別食材一覧
 - 食材詳細情報（効能、栄養情報、注意事項）
 - 調理法の表示
+- **楽天レシピAPI連携によるレシピ表示**
 - レスポンシブデザイン
 - 検索機能
 
@@ -111,3 +122,28 @@ npm run e2e:headless
 # 開発サーバーを起動した状態で実行
 npm run check-a11y
 ```
+
+## 本番環境へのデプロイ
+
+本番環境へのデプロイ手順については以下のドキュメントを参照してください：
+
+- [楽天APIキー取得ガイド](docs/rakuten-api-setup.md)
+- [デプロイガイド](docs/deployment-guide.md)
+
+### 主要な本番環境設定
+
+1. **楽天APIキーの設定**
+   ```bash
+   RAKUTEN_APPLICATION_ID=your_actual_api_key
+   ```
+
+2. **本番環境フラグ**
+   ```bash
+   NODE_ENV=production
+   USE_MOCK_RECIPES=false
+   ```
+
+3. **セキュリティ設定**
+   - HTTPS強制
+   - Content Security Policy
+   - レート制限

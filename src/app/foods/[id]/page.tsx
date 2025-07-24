@@ -8,6 +8,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import ApiErrorFallback from '@/components/ui/ApiErrorFallback';
 import CookingMethodList from '@/components/ui/CookingMethodList';
 import FoodDetailSkeleton from '@/components/ui/skeletons/FoodDetailSkeleton';
+import RecipeList from '@/components/ui/RecipeList';
 
 // Wrapper component with error boundary
 export default function FoodDetailPageWrapper() {
@@ -57,7 +58,7 @@ function FoodDetailPage() {
     if (foodId) {
       fetchFoodDetails();
     }
-  }, [fetchFoodDetails]);
+  }, [fetchFoodDetails, foodId]);
 
   // Helper function to render effectiveness badge
   const renderEffectivenessBadge = (effectiveness: HealthBenefit['effectiveness']) => {
@@ -209,6 +210,15 @@ function FoodDetailPage() {
             <p className="text-gray-500">この食材に対する調理法情報はありません</p>
           </div>
         )}
+      </div>
+
+      {/* レシピ */}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">おすすめレシピ</h2>
+        <p className="text-sm text-gray-500 mb-6">
+          楽天レシピから{food.name}を使ったおすすめレシピをご紹介します。
+        </p>
+        <RecipeList foodId={foodId} foodName={food.name} />
       </div>
     </div>
   );

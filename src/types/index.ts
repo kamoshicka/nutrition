@@ -163,3 +163,40 @@ export const getEffectivenessScore = (effectiveness: HealthBenefit['effectivenes
     default: return 0;
   }
 };
+
+// 楽天レシピAPI関連の型定義
+export interface RakutenRecipeCategory {
+  categoryId: string;
+  categoryName: string;
+  categoryUrl: string;
+  parentCategoryId?: string;
+}
+
+export interface RakutenRecipe {
+  recipeId: number;
+  recipeTitle: string;
+  recipeUrl: string;
+  foodImageUrl: string;
+  mediumImageUrl: string;
+  smallImageUrl: string;
+  pickup: number;
+  shop: number;
+  nickname: string;
+  recipeMaterial: string[];
+  recipeIndication: string;
+  recipeCost: string;
+  recipePublishday: string;
+  rank: string;
+}
+
+export interface RakutenRecipeSearchResponse {
+  result: RakutenRecipe[];
+}
+
+export interface RakutenRecipeCategoryResponse {
+  result: {
+    large: RakutenRecipeCategory[];
+    medium: RakutenRecipeCategory[];
+    small: RakutenRecipeCategory[];
+  };
+}

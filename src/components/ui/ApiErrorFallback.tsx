@@ -35,12 +35,12 @@ export default function ApiErrorFallback({
     try {
       // Try to parse the error message as JSON (for API errors)
       const errorData = JSON.parse(error.message);
-      
+
       if (errorData?.error) {
-        const isNotFound = errorData.error.code === 'not_found' || 
-                          errorData.error.code === 'FOOD_NOT_FOUND' ||
-                          errorData.error.code === 'CATEGORY_NOT_FOUND';
-        
+        const isNotFound = errorData.error.code === 'not_found' ||
+          errorData.error.code === 'FOOD_NOT_FOUND' ||
+          errorData.error.code === 'CATEGORY_NOT_FOUND';
+
         setErrorDetails({
           title: isNotFound ? '見つかりませんでした' : 'エラーが発生しました',
           message: errorData.error.message || 'データの読み込み中に問題が発生しました。',
