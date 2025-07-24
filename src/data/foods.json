@@ -1,0 +1,123 @@
+[
+  {
+    "id": "bitter-melon",
+    "name": "ゴーヤ（苦瓜）",
+    "description": "沖縄の代表的な野菜で、血糖値の調整に効果があるとされる",
+    "nutritionalInfo": {
+      "calories": 17,
+      "protein": 1.0,
+      "carbohydrates": 3.9,
+      "fat": 0.1,
+      "vitamins": ["ビタミンC", "ビタミンK", "葉酸"],
+      "minerals": ["カリウム", "マグネシウム", "鉄"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "糖尿病",
+        "effect": "血糖値の上昇を抑制し、インスリン感受性を改善する",
+        "scientificBasis": "チャランチンとモモルデシンという成分がインスリン様の作用を示すことが研究で確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["妊娠中の摂取は控える", "過剰摂取により下痢を起こす可能性がある"],
+    "cookingMethodIds": ["stir-fry", "tempura", "salad"]
+  },
+  {
+    "id": "garlic",
+    "name": "にんにく",
+    "description": "強い香りと味を持つ香味野菜で、多くの健康効果が期待される",
+    "nutritionalInfo": {
+      "calories": 134,
+      "protein": 6.2,
+      "carbohydrates": 28.4,
+      "fat": 0.9,
+      "vitamins": ["ビタミンB6", "ビタミンC", "ビタミンB1"],
+      "minerals": ["マンガン", "セレン", "リン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "高血圧",
+        "effect": "血管を拡張させ、血圧を下げる効果がある",
+        "scientificBasis": "アリシンという成分が血管拡張作用を持ち、複数の臨床試験で血圧降下効果が確認されている",
+        "effectiveness": "high"
+      },
+      {
+        "condition": "免疫力向上",
+        "effect": "免疫システムを強化し、感染症への抵抗力を高める",
+        "scientificBasis": "硫黄化合物が免疫細胞の活性化を促進することが研究で示されている",
+        "effectiveness": "medium"
+      }
+    ],
+    "precautions": ["空腹時の大量摂取は胃腸障害を起こす可能性がある", "血液凝固阻害薬との併用注意"],
+    "cookingMethodIds": ["roasted", "raw", "stir-fry"]
+  },
+  {
+    "id": "salmon",
+    "name": "鮭",
+    "description": "オメガ3脂肪酸が豊富な魚で、心臓の健康に良いとされる",
+    "nutritionalInfo": {
+      "calories": 208,
+      "protein": 25.4,
+      "carbohydrates": 0,
+      "fat": 12.4,
+      "vitamins": ["ビタミンD", "ビタミンB12", "ナイアシン"],
+      "minerals": ["セレン", "リン", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "心疾患",
+        "effect": "悪玉コレステロールを減らし、心臓病のリスクを低下させる",
+        "scientificBasis": "EPA・DHAなどのオメガ3脂肪酸が心血管疾患の予防効果を持つことが多数の研究で証明されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["水銀含有量に注意し、妊娠中は摂取量を制限する"],
+    "cookingMethodIds": ["grilled", "steamed", "baked"]
+  },
+  {
+    "id": "ginger",
+    "name": "生姜",
+    "description": "辛味と香りが特徴的な根菜で、消化促進や抗炎症作用がある",
+    "nutritionalInfo": {
+      "calories": 80,
+      "protein": 1.8,
+      "carbohydrates": 17.8,
+      "fat": 0.8,
+      "vitamins": ["ビタミンC", "ビタミンB6"],
+      "minerals": ["マグネシウム", "カリウム", "マンガン"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "消化器系の健康",
+        "effect": "消化を促進し、吐き気や胃もたれを軽減する",
+        "scientificBasis": "ジンゲロールという成分が胃腸の蠕動運動を促進し、消化酵素の分泌を高めることが確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["胆石がある場合は医師に相談する", "血液凝固阻害薬との併用注意"],
+    "cookingMethodIds": ["tea", "stir-fry", "pickled"]
+  },
+  {
+    "id": "turmeric",
+    "name": "ターメリック（ウコン）",
+    "description": "黄色いスパイスで、強力な抗炎症作用を持つ",
+    "nutritionalInfo": {
+      "calories": 354,
+      "protein": 7.8,
+      "carbohydrates": 64.9,
+      "fat": 9.9,
+      "vitamins": ["ビタミンC", "ビタミンE"],
+      "minerals": ["鉄", "マンガン", "カリウム"]
+    },
+    "healthBenefits": [
+      {
+        "condition": "免疫力向上",
+        "effect": "抗炎症作用により免疫システムをサポートし、慢性炎症を抑制する",
+        "scientificBasis": "クルクミンという活性成分が強力な抗炎症・抗酸化作用を持つことが多数の研究で確認されている",
+        "effectiveness": "high"
+      }
+    ],
+    "precautions": ["胆石がある場合は避ける", "血液凝固阻害薬との併用注意", "鉄分の吸収を阻害する可能性がある"],
+    "cookingMethodIds": ["curry", "tea", "supplement"]
+  }
+]

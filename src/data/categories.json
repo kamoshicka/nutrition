@@ -1,0 +1,32 @@
+[
+  {
+    "id": "diabetes",
+    "name": "糖尿病",
+    "description": "血糖値の管理に効果的な食材を含むカテゴリ",
+    "foodIds": ["bitter-melon", "cinnamon", "green-tea", "oats"]
+  },
+  {
+    "id": "hypertension",
+    "name": "高血圧",
+    "description": "血圧の調整に役立つ食材を含むカテゴリ",
+    "foodIds": ["garlic", "celery", "banana", "spinach"]
+  },
+  {
+    "id": "heart-disease",
+    "name": "心疾患",
+    "description": "心臓の健康をサポートする食材を含むカテゴリ",
+    "foodIds": ["salmon", "walnuts", "olive-oil", "avocado"]
+  },
+  {
+    "id": "digestive-health",
+    "name": "消化器系の健康",
+    "description": "消化機能の改善に効果的な食材を含むカテゴリ",
+    "foodIds": ["ginger", "yogurt", "papaya", "fennel"]
+  },
+  {
+    "id": "immune-system",
+    "name": "免疫力向上",
+    "description": "免疫システムを強化する食材を含むカテゴリ",
+    "foodIds": ["citrus-fruits", "mushrooms", "turmeric", "garlic"]
+  }
+]
