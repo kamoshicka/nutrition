@@ -13,23 +13,23 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'ヘルスケア食材アプリ',
+  title: 'ヘルナビ',
   description: '病気・症状に効果的な食材と調理法を提供するアプリケーション',
   keywords: '健康, 食材, 栄養, 病気予防, 健康食品, 調理法, ヘルスケア',
-  authors: [{ name: 'ヘルスケア食材アプリチーム' }],
+  authors: [{ name: 'ヘルナビチーム' }],
   robots: 'index, follow',
   metadataBase: new URL('https://healthcare-food-app.example.com'),
   openGraph: {
-    title: 'ヘルスケア食材アプリ',
+    title: 'ヘルナビ',
     description: '病気・症状に効果的な食材と調理法を提供するアプリケーション',
     url: 'https://healthcare-food-app.example.com',
-    siteName: 'ヘルスケア食材アプリ',
+    siteName: 'ヘルナビ',
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ヘルスケア食材アプリ',
+    title: 'ヘルナビ',
     description: '病気・症状に効果的な食材と調理法を提供するアプリケーション',
   },
   manifest: '/manifest.json',
@@ -47,7 +47,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#4f46e5" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ヘルスケア食材アプリ" />
+        <meta name="apple-mobile-web-app-title" content="ヘルナビ" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
       <body className={`${inter.className} h-full`}>
@@ -64,7 +64,7 @@ export default function RootLayout({
             <footer className="bg-white border-t mt-auto" role="contentinfo">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <p className="text-center text-sm text-gray-500">
-                  © {new Date().getFullYear()} ヘルスケア食材アプリ
+                  © {new Date().getFullYear()} ヘルナビ
                 </p>
               </div>
             </footer>
