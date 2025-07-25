@@ -1,6 +1,9 @@
 import { getServerSession } from 'next-auth';
-import { authOptions, User } from './auth';
+import { authOptions, User, getUserById, updateUserSubscription } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
+
+// Re-export functions for convenience
+export { getUserById, updateUserSubscription };
 
 /**
  * Utility functions for authentication and authorization

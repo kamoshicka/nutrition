@@ -231,3 +231,61 @@ export async function updateUserSearchCount(userId: string, increment: number = 
     return newCount;
   }
 }
+
+export async function updateUserSubscription(userId: string, subscriptionData: {
+  status: 'free' | 'premium' | 'cancelled';
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  currentPeriodStart?: Date;
+  currentPeriodEnd?: Date;
+  cancelAtPeriodEnd: boolean;
+}) {
+  const db = await getDatabase();
+  
+  // Check if subscription record exists
+  const existingSubscription = await db.get(
+    'SELECT id FROM subscriptions WHERE user_id = ?',
+    [userId]
+  );
+
+  if (existingSubscription) {
+    // Update existing subscription
+    await db.run(
+      `UPDATE subscriptions SET 
+        status = ?, 
+        stripe_customer_id = ?, 
+        stripe_subscription_id = ?, 
+        current_period_start = ?, 
+        current_period_end = ?, 
+        cancel_at_period_end = ?
+      WHERE user_id = ?`,
+      [
+        subscriptionData.status,
+        subscriptionData.stripeCustomerId || null,
+        subscriptionData.stripeSubscriptionId || null,
+        subscriptionData.currentPeriodStart?.toISOString() || null,
+        subscriptionData.currentPeriodEnd?.toISOString() || null,
+        subscriptionData.cancelAtPeriodEnd,
+        userId
+      ]
+    );
+  } else {
+    // Create new subscription record
+    await db.run(
+      `INSERT INTO subscriptions (
+        id, user_id, status, stripe_customer_id, stripe_subscription_id, 
+        current_period_start, current_period_end, cancel_at_period_end
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        crypto.randomUUID(),
+        userId,
+        subscriptionData.status,
+        subscriptionData.stripeCustomerId || null,
+        subscriptionData.stripeSubscriptionId || null,
+        subscriptionData.currentPeriodStart?.toISOString() || null,
+        subscriptionData.currentPeriodEnd?.toISOString() || null,
+        subscriptionData.cancelAtPeriodEnd
+      ]
+    );
+  }
+}

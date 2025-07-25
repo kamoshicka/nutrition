@@ -1,13 +1,13 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 /**
  * Custom hook for authentication state and utilities
  */
 export function useAuth() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
 
   const authState = useMemo(() => {
     const isLoading = status === 'loading';
@@ -60,7 +60,18 @@ export function useAuth() {
     };
   }, [session, status]);
 
-  return authState;
+  const refreshUser = useCallback(async () => {
+    try {
+      await update();
+    } catch (error) {
+      console.error('Error refreshing user session:', error);
+    }
+  }, [update]);
+
+  return {
+    ...authState,
+    refreshUser,
+  };
 }
 
 /**
