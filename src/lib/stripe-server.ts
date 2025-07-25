@@ -16,8 +16,8 @@ export const STRIPE_CONFIG = {
 // Stripe product configuration
 export const PREMIUM_PLAN = {
   name: 'プレミアムプラン',
-  description: '無制限検索、お気に入り、栄養計算、PDF保存、買い物リスト機能',
-  price: 980, // 980円/月
+  description: 'お気に入り、栄養計算、PDF保存、買い物リスト機能',
+  price: 300, // 300円/月
   currency: 'jpy',
   interval: 'month' as const,
   trialPeriodDays: 7,

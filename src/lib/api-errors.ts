@@ -1,4 +1,4 @@
-"use client";
+import { NextResponse } from 'next/server';
 
 /**
  * Standard API error response format
@@ -44,17 +44,17 @@ export class ApiError extends Error {
 /**
  * Create a standard error response for API routes
  */
-export function createErrorResponse(error: unknown, defaultStatus = 500): Response {
+export function createErrorResponse(error: unknown, defaultStatus = 500): NextResponse {
   console.error('API Error:', error);
   
   if (error instanceof ApiError) {
-    return Response.json(error.toResponse(), { status: error.status });
+    return NextResponse.json(error.toResponse(), { status: error.status });
   }
   
   // Handle standard errors
   const message = error instanceof Error ? error.message : '予期しないエラーが発生しました';
   
-  return Response.json(
+  return NextResponse.json(
     {
       error: {
         code: 'internal_server_error',

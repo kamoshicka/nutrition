@@ -1,4 +1,4 @@
-import { ApiError, createErrorResponse, ApiErrors } from '../error';
+import { ApiError, createErrorResponse, ApiErrors } from '@/lib/api-errors';
 
 describe('API Error Utilities', () => {
   describe('ApiError class', () => {

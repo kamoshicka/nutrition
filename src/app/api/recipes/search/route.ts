@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { searchRecipes } from '@/lib/rakuten-recipe-api';
-import { createErrorResponse, ApiErrors } from '@/app/api/error';
+import { createErrorResponse, ApiErrors } from '@/lib/api-errors';
 
 /**
  * GET /api/recipes/search

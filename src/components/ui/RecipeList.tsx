@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { RakutenRecipe } from '@/types';
 import RecipeCard from './RecipeCard';
 import LoadingSpinner from './LoadingSpinner';
@@ -27,11 +27,7 @@ export default function RecipeList({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
 
-  useEffect(() => {
-    fetchRecipes();
-  }, [foodId, searchKeyword, categoryId]);
-
-  const fetchRecipes = async (pageNum: number = 1) => {
+  const fetchRecipes = useCallback(async (pageNum: number = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -75,7 +71,11 @@ export default function RecipeList({
     } finally {
       setLoading(false);
     }
-  };
+  }, [foodId, searchKeyword, categoryId]);
+
+  useEffect(() => {
+    fetchRecipes();
+  }, [fetchRecipes]);
 
   const loadMore = () => {
     if (!loading && hasMore) {

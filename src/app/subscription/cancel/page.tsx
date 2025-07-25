@@ -17,15 +17,14 @@ export default function SubscriptionCancelPage() {
         <div className="bg-blue-50 p-4 rounded-lg mb-6">
           <h3 className="font-semibold text-blue-900 mb-2">プレミアム機能</h3>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• 無制限検索</li>
-            <li>• お気に入り機能</li>
+            <li>• お気に入り機能（無制限）</li>
             <li>• 栄養計算機能</li>
             <li>• PDF保存機能</li>
             <li>• 買い物リスト機能</li>
             <li>• 広告非表示</li>
           </ul>
           <p className="text-xs text-blue-600 mt-2">
-            7日間無料トライアル付き
+            月額300円・7日間無料トライアル付き
           </p>
         </div>
 

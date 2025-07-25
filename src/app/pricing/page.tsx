@@ -8,7 +8,7 @@ export default function PricingPage() {
   const { user, isLoading } = useAuth();
 
   const freeFeatures = [
-    '月30回まで検索',
+    '無制限検索',
     '基本的な食材情報',
     '楽天レシピ検索',
     '広告表示あり',
@@ -56,7 +56,7 @@ export default function PricingPage() {
           <PricingCard
             plan="premium"
             features={premiumFeatures}
-            price={980}
+            price={300}
             isCurrentPlan={isPremium}
           />
         </div>

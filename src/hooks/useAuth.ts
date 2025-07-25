@@ -20,13 +20,13 @@ export function useAuth() {
     const isCancelled = subscriptionStatus === 'cancelled';
     const isFree = subscriptionStatus === 'free';
     
-    // Search limits
+    // Search limits - now unlimited for all users
     const searchCount = user?.searchCount || 0;
-    const searchLimit = 30;
-    const remainingSearches = isPremium ? -1 : Math.max(0, searchLimit - searchCount);
-    const canSearch = isPremium || remainingSearches > 0;
-    const isNearSearchLimit = !isPremium && (searchCount / searchLimit) >= 0.8;
-    const isAtSearchLimit = !isPremium && remainingSearches === 0;
+    const searchLimit = -1; // Unlimited for all users
+    const remainingSearches = -1; // Always unlimited
+    const canSearch = true; // Always allow search
+    const isNearSearchLimit = false; // Never near limit
+    const isAtSearchLimit = false; // Never at limit
 
     return {
       // Basic auth state
@@ -55,7 +55,7 @@ export function useAuth() {
         canSearch,
         isNearLimit: isNearSearchLimit,
         isAtLimit: isAtSearchLimit,
-        usagePercentage: isPremium ? 0 : (searchCount / searchLimit) * 100,
+        usagePercentage: 0, // Always 0% since unlimited
       },
     };
   }, [session, status]);
@@ -94,10 +94,7 @@ export function useSearchLimits() {
   const { search, subscription } = useAuth();
   
   const trackSearch = async (increment: number = 1) => {
-    if (subscription.isPremium) {
-      return { success: true, remainingSearches: -1 };
-    }
-
+    // Search is now unlimited for all users, but we still track for analytics
     try {
       const response = await fetch('/api/search/track', {
         method: 'POST',
@@ -112,10 +109,10 @@ export function useSearchLimits() {
       }
 
       const data = await response.json();
-      return { success: true, ...data };
+      return { success: true, remainingSearches: -1, ...data };
     } catch (error) {
       console.error('Error tracking search:', error);
-      return { success: false, error };
+      return { success: true, remainingSearches: -1, error }; // Still allow search even if tracking fails
     }
   };
 

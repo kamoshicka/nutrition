@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRecipeRanking } from '@/lib/rakuten-recipe-api';
-import { createErrorResponse } from '@/app/api/error';
+import { createErrorResponse } from '@/lib/api-errors';
 
 /**
  * GET /api/recipes

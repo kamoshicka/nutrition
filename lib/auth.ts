@@ -103,8 +103,8 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.user = user;
+      if (user && 'subscription' in user) {
+        token.user = user as User;
       }
       return token;
     },
@@ -117,7 +117,6 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    signUp: '/auth/signup',
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

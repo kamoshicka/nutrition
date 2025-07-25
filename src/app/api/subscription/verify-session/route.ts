@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions, updateUserSubscription } from '@/lib/auth';
+import { authOptions, updateUserSubscription } from '../../../../../lib/auth';
 import { stripe } from '@/lib/stripe-server';
 
 export async function POST(request: NextRequest) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFoodById, getCookingMethodsByFood } from '@/lib/data-loader';
-import { ApiErrors, createErrorResponse } from '@/app/api/error';
+import { ApiErrors, createErrorResponse } from '@/lib/api-errors';
 
 /**
  * GET /api/foods/[id]

@@ -14,13 +14,15 @@ jest.mock('next/navigation', () => ({
 
 // Mock Next.js Link component
 jest.mock('next/link', () => {
-  return ({ children, href, ...rest }: any) => {
+  const MockLink = ({ children, href, ...rest }: any) => {
     return (
       <a href={href} {...rest}>
         {children}
       </a>
     );
   };
+  MockLink.displayName = 'MockLink';
+  return MockLink;
 });
 
 // Mock fetch API

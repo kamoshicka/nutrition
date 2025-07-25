@@ -13,30 +13,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user is premium (premium users don't have search limits)
     const isPremium = session.user.subscription?.status === 'premium';
-    
-    if (isPremium) {
-      return NextResponse.json({
-        searchCount: 0,
-        remainingSearches: -1, // -1 indicates unlimited
-        isPremium: true
-      });
-    }
-
     const body = await request.json();
     const { increment = 1 } = body;
 
-    // Update search count
+    // Still track search count for analytics, but no limits for any user
     const newSearchCount = await updateUserSearchCount(session.user.id, increment);
-    const searchLimit = 30;
-    const remainingSearches = Math.max(0, searchLimit - newSearchCount);
 
     return NextResponse.json({
       searchCount: newSearchCount,
-      remainingSearches,
-      searchLimit,
-      isPremium: false
+      remainingSearches: -1, // -1 indicates unlimited for all users
+      searchLimit: -1, // No limit
+      isPremium
     });
   } catch (error) {
     console.error('Search tracking error:', error);
@@ -58,26 +46,14 @@ export async function GET() {
       );
     }
 
-    // Check if user is premium
     const isPremium = session.user.subscription?.status === 'premium';
-    
-    if (isPremium) {
-      return NextResponse.json({
-        searchCount: 0,
-        remainingSearches: -1, // -1 indicates unlimited
-        isPremium: true
-      });
-    }
-
     const searchCount = session.user.searchCount || 0;
-    const searchLimit = 30;
-    const remainingSearches = Math.max(0, searchLimit - searchCount);
 
     return NextResponse.json({
       searchCount,
-      remainingSearches,
-      searchLimit,
-      isPremium: false
+      remainingSearches: -1, // -1 indicates unlimited for all users
+      searchLimit: -1, // No limit
+      isPremium
     });
   } catch (error) {
     console.error('Search status error:', error);

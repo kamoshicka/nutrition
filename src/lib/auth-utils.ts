@@ -101,7 +101,7 @@ export function withPremiumAPI(handler: (req: NextRequest, user: User) => Promis
 }
 
 /**
- * Check if user can perform search (not at limit)
+ * Check if user can perform search (now unlimited for all users)
  */
 export async function canUserSearch(): Promise<{ canSearch: boolean; remainingSearches: number; isPremium: boolean }> {
   const user = await getCurrentUser();
@@ -112,16 +112,8 @@ export async function canUserSearch(): Promise<{ canSearch: boolean; remainingSe
 
   const isPremium = user.subscription.status === 'premium';
   
-  if (isPremium) {
-    return { canSearch: true, remainingSearches: -1, isPremium: true };
-  }
-
-  const searchCount = user.searchCount || 0;
-  const searchLimit = 30;
-  const remainingSearches = Math.max(0, searchLimit - searchCount);
-  const canSearch = remainingSearches > 0;
-
-  return { canSearch, remainingSearches, isPremium: false };
+  // Search is now unlimited for all users
+  return { canSearch: true, remainingSearches: -1, isPremium };
 }
 
 /**
