@@ -157,7 +157,7 @@ export async function searchRecipes(keyword: string, options: {
         hits?: number;
 } = {}): Promise<RakutenRecipe[]> {
         try {
-                if (!APPLICATION_ID) {
+                if (!config.rakuten.applicationId) {
                         console.warn('楽天APIキーが設定されていないため、モックデータを返します');
                         return getMockRecipes(keyword).slice(0, options.hits || 20);
                 }
@@ -203,7 +203,7 @@ export async function getRecipesByFoodName(foodName: string, limit: number = 10)
  */
 export async function getRecipeRanking(categoryId?: string, page: number = 1): Promise<RakutenRecipe[]> {
         try {
-                if (!APPLICATION_ID) {
+                if (!config.rakuten.applicationId) {
                         console.warn('楽天APIキーが設定されていないため、モックデータを返します');
                         return getMockRecipes('人気レシピ');
                 }

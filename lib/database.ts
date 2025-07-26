@@ -60,12 +60,13 @@ export async function initializeDatabase(): Promise<void> {
     CREATE TABLE IF NOT EXISTS favorites (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
-      type TEXT NOT NULL CHECK (type IN ('food', 'recipe')),
+      item_type TEXT NOT NULL CHECK (item_type IN ('food', 'recipe')),
       item_id TEXT NOT NULL,
-      notes TEXT,
+      item_data TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-      UNIQUE(user_id, type, item_id)
+      UNIQUE(user_id, item_type, item_id)
     )
   `);
 
@@ -76,9 +77,14 @@ export async function initializeDatabase(): Promise<void> {
       user_id TEXT NOT NULL,
       food_name TEXT NOT NULL,
       quantity TEXT,
+      unit TEXT,
       checked BOOLEAN DEFAULT FALSE,
       recipe_id TEXT,
+      recipe_name TEXT,
+      category TEXT,
+      notes TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
     )
   `);

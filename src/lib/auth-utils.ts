@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { authOptions, User, getUserById, updateUserSubscription } from '@/lib/auth';
+import { authOptions, User, getUserById, updateUserSubscription } from '../../lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Re-export functions for convenience

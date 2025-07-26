@@ -28,8 +28,10 @@ export interface User {
     currentPeriodEnd?: Date;
     cancelAtPeriodEnd: boolean;
   };
-  searchCount: number;
-  searchCountResetDate: Date;
+  searchCount: {
+    count: number;
+    lastResetDate: string;
+  };
 }
 
 export const authOptions: NextAuthOptions = {
@@ -84,8 +86,10 @@ export const authOptions: NextAuthOptions = {
               status: 'free',
               cancelAtPeriodEnd: false,
             },
-            searchCount: user.search_count,
-            searchCountResetDate: new Date(user.search_count_reset_date),
+            searchCount: {
+              count: user.search_count || 0,
+              lastResetDate: user.search_count_reset_date || new Date().toISOString(),
+            },
           };
         } catch (error) {
           console.error('Auth error:', error);
@@ -192,8 +196,10 @@ export async function getUserById(id: string): Promise<User | null> {
         status: 'free',
         cancelAtPeriodEnd: false,
       },
-      searchCount: user.search_count,
-      searchCountResetDate: new Date(user.search_count_reset_date),
+      searchCount: {
+        count: user.search_count || 0,
+        lastResetDate: user.search_count_reset_date || new Date().toISOString(),
+      },
     };
   } catch (error) {
     console.error('Error getting user:', error);
@@ -201,34 +207,16 @@ export async function getUserById(id: string): Promise<User | null> {
   }
 }
 
-export async function updateUserSearchCount(userId: string, increment: number = 1) {
+export async function updateUserSearchCount(userId: string, newCount: number, currentMonth: string) {
   const db = await getDatabase();
   const now = new Date();
-  const user = await db.get('SELECT search_count, search_count_reset_date FROM users WHERE id = ?', [userId]);
   
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const resetDate = new Date(user.search_count_reset_date);
-  const shouldReset = now.getMonth() !== resetDate.getMonth() || now.getFullYear() !== resetDate.getFullYear();
-
-  if (shouldReset) {
-    // Reset search count for new month
-    await db.run(
-      'UPDATE users SET search_count = ?, search_count_reset_date = ? WHERE id = ?',
-      [increment, now.toISOString(), userId]
-    );
-    return increment;
-  } else {
-    // Increment search count
-    const newCount = user.search_count + increment;
-    await db.run(
-      'UPDATE users SET search_count = ? WHERE id = ?',
-      [newCount, userId]
-    );
-    return newCount;
-  }
+  await db.run(
+    'UPDATE users SET search_count = ?, search_count_reset_date = ? WHERE id = ?',
+    [newCount, now.toISOString(), userId]
+  );
+  
+  return newCount;
 }
 
 export async function updateUserSubscription(userId: string, subscriptionData: {

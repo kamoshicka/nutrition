@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Subscription has been resumed',
       cancelAtPeriodEnd: false,
-      currentPeriodEnd: subscription.current_period_end,
+      currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
     });
 
   } catch (error) {

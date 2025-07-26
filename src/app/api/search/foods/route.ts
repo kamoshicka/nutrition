@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { searchFoods } from '@/lib/search';
 import { ErrorResponse } from '@/types';
+import { withSearchLimits } from '../../../../middleware/search-middleware';
 
 /**
  * GET /api/search/foods?q=:query
  * Search foods by name, description, or health benefits
  */
-export async function GET(request: NextRequest): Promise<NextResponse> {
+export const GET = withSearchLimits(async function(request: NextRequest): Promise<NextResponse> {
   try {
     // Get search query from URL parameters
     const searchParams = request.nextUrl.searchParams;
@@ -91,4 +92,4 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       }
     });
   }
-}
+});
