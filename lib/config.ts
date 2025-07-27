@@ -28,15 +28,15 @@ const envSchema = z.object({
   
   // External APIs
   RAKUTEN_APPLICATION_ID: z.string().optional(),
-  USE_MOCK_RECIPES: z.string().transform(val => val === 'true').default('false'),
+  USE_MOCK_RECIPES: z.string().default('false').transform(val => val === 'true'),
   
   // Security
-  BCRYPT_ROUNDS: z.string().transform(val => parseInt(val, 10)).default('12'),
+  BCRYPT_ROUNDS: z.string().default('12').transform(val => parseInt(val, 10)),
   
   // Monitoring and Analytics
-  ENABLE_ANALYTICS: z.string().transform(val => val === 'true').default('false'),
-  ENABLE_ERROR_REPORTING: z.string().transform(val => val === 'true').default('false'),
-  ENABLE_PERFORMANCE_MONITORING: z.string().transform(val => val === 'true').default('false'),
+  ENABLE_ANALYTICS: z.string().default('false').transform(val => val === 'true'),
+  ENABLE_ERROR_REPORTING: z.string().default('false').transform(val => val === 'true'),
+  ENABLE_PERFORMANCE_MONITORING: z.string().default('false').transform(val => val === 'true'),
   
   // Logging
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
@@ -49,34 +49,34 @@ const envSchema = z.object({
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
   
   // Rate Limiting
-  RATE_LIMIT_WINDOW_MS: z.string().transform(val => parseInt(val, 10)).default('900000'),
-  RATE_LIMIT_MAX_REQUESTS: z.string().transform(val => parseInt(val, 10)).default('100'),
+  RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform(val => parseInt(val, 10)),
+  RATE_LIMIT_MAX_REQUESTS: z.string().default('100').transform(val => parseInt(val, 10)),
   
   // CORS
   ALLOWED_ORIGINS: z.string().optional(),
   
   // SSL/Security
-  FORCE_HTTPS: z.string().transform(val => val === 'true').default('false'),
+  FORCE_HTTPS: z.string().default('false').transform(val => val === 'true'),
   
   // Cache
   REDIS_URL: z.string().optional(),
-  ENABLE_REDIS_CACHE: z.string().transform(val => val === 'true').default('false'),
+  ENABLE_REDIS_CACHE: z.string().default('false').transform(val => val === 'true'),
   
   // Email
   SMTP_HOST: z.string().optional(),
-  SMTP_PORT: z.string().transform(val => parseInt(val, 10)).optional(),
+  SMTP_PORT: z.string().optional().transform(val => val ? parseInt(val, 10) : undefined),
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
   FROM_EMAIL: z.string().email().optional(),
   
   // Backup
-  ENABLE_AUTOMATED_BACKUPS: z.string().transform(val => val === 'true').default('false'),
+  ENABLE_AUTOMATED_BACKUPS: z.string().default('false').transform(val => val === 'true'),
   BACKUP_SCHEDULE: z.string().default('0 2 * * *'),
-  BACKUP_RETENTION_DAYS: z.string().transform(val => parseInt(val, 10)).default('30'),
+  BACKUP_RETENTION_DAYS: z.string().default('30').transform(val => parseInt(val, 10)),
   
   // Health Check
   HEALTH_CHECK_ENDPOINT: z.string().default('/api/health'),
-  HEALTH_CHECK_TIMEOUT: z.string().transform(val => parseInt(val, 10)).default('5000'),
+  HEALTH_CHECK_TIMEOUT: z.string().default('5000').transform(val => parseInt(val, 10)),
 });
 
 // Parse and validate environment variables
@@ -85,12 +85,12 @@ function parseEnv() {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const missingVars = error.errors
-        .filter(err => err.code === 'invalid_type' && err.received === 'undefined')
+      const missingVars = error.issues
+        .filter(err => err.code === 'invalid_type' && (err as any).received === 'undefined')
         .map(err => err.path.join('.'));
       
-      const invalidVars = error.errors
-        .filter(err => err.code !== 'invalid_type' || err.received !== 'undefined')
+      const invalidVars = error.issues
+        .filter(err => err.code !== 'invalid_type' || (err as any).received !== 'undefined')
         .map(err => `${err.path.join('.')}: ${err.message}`);
       
       console.error('❌ Environment variable validation failed:');

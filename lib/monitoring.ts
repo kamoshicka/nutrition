@@ -61,7 +61,7 @@ class MonitoringService {
       } catch (error) {
         return { 
           status: 'fail', 
-          message: `Database connection failed: ${error.message}` 
+          message: `Database connection failed: ${error instanceof Error ? error.message : String(error)}` 
         };
       }
     });
@@ -108,7 +108,7 @@ class MonitoringService {
       } catch (error) {
         return {
           status: 'fail',
-          message: `Disk access failed: ${error.message}`
+          message: `Disk access failed: ${error instanceof Error ? error.message : String(error)}`
         };
       }
     });
@@ -124,7 +124,7 @@ class MonitoringService {
           // For now, just check if the key is configured
           checks.push({ service: 'stripe', status: 'configured' });
         } catch (error) {
-          checks.push({ service: 'stripe', status: 'error', error: error.message });
+          checks.push({ service: 'stripe', status: 'error', error: error instanceof Error ? error.message : String(error) });
         }
       }
       
@@ -153,7 +153,7 @@ class MonitoringService {
     
     let overallStatus: 'healthy' | 'unhealthy' | 'degraded' = 'healthy';
     
-    for (const [name, check] of this.healthChecks) {
+    for (const [name, check] of Array.from(this.healthChecks.entries())) {
       const start = Date.now();
       
       try {
@@ -182,7 +182,7 @@ class MonitoringService {
         
         checks[name] = {
           status: 'fail',
-          message: error.message,
+          message: error instanceof Error ? error.message : String(error),
           duration
         };
         
@@ -190,7 +190,7 @@ class MonitoringService {
         
         logger.error('Health check failed', { 
           check: name, 
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
           duration 
         });
       }
@@ -250,7 +250,7 @@ class MonitoringService {
     
     // Return all metrics
     const allMetrics: MetricData[] = [];
-    for (const metrics of this.metrics.values()) {
+    for (const metrics of Array.from(this.metrics.values())) {
       allMetrics.push(...metrics);
     }
     

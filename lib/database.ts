@@ -140,7 +140,7 @@ export async function executeOptimizedQuery<T>(
     const database = await getDatabase();
     return await withOptimizedQuery<T>(database, query, params, options);
   } catch (error) {
-    errorMonitoring.reportError(error, {
+    errorMonitoring.reportError(error instanceof Error ? error : String(error), {
       url: 'database_query',
       method: 'QUERY'
     });

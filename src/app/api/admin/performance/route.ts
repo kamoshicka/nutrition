@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
     monitoring.recordResponseTime('/api/admin/performance', duration, 500);
 
     logger.error('Performance monitoring request failed', {
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       duration,
       type: 'performance_monitoring_error'
     });
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Failed to fetch performance data',
-        message: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
       },
       { status: 500 }
     );

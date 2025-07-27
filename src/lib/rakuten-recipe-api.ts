@@ -1,8 +1,9 @@
 import { RakutenRecipe, RakutenRecipeCategory, RakutenRecipeSearchResponse, RakutenRecipeCategoryResponse } from '@/types';
-import { config, validateConfig } from './config';
+import { config } from './config';
 
-// 設定の検証
-validateConfig();
+// 楽天APIキーの確認（実行時にチェック）
+const hasRakutenKey = !!process.env.RAKUTEN_APPLICATION_ID;
+const useMockData = process.env.USE_MOCK_RECIPES === 'true' || !hasRakutenKey;
 
 // レート制限管理
 class RateLimiter {

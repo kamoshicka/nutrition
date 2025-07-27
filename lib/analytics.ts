@@ -117,7 +117,7 @@ class AnalyticsService {
     } catch (error) {
       logger.error('Failed to send event to external analytics', {
         event: event.event,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         type: 'analytics_error'
       });
     }
@@ -149,7 +149,7 @@ class AnalyticsService {
       }
     } catch (error) {
       logger.error('Failed to send to custom analytics endpoint', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         endpoint
       });
     }
@@ -197,7 +197,7 @@ class AnalyticsService {
 
     } catch (error) {
       logger.error('Failed to calculate KPIs', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         timeRange,
         type: 'kpi_error'
       });
@@ -362,7 +362,8 @@ class AnalyticsService {
       const funnel: ConversionFunnel[] = [];
       let previousCount = 0;
 
-      for (const [index, step] of steps.entries()) {
+      for (let index = 0; index < steps.length; index++) {
+        const step = steps[index];
         const result = await db.get(step.query);
         const count = result.count;
         
@@ -383,7 +384,7 @@ class AnalyticsService {
 
     } catch (error) {
       logger.error('Failed to calculate conversion funnel', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         type: 'funnel_error'
       });
       return [];
@@ -408,7 +409,7 @@ class AnalyticsService {
         ORDER BY cohort_month
       `);
 
-      return cohorts.map(cohort => ({
+      return cohorts.map((cohort: any) => ({
         month: cohort.cohort_month,
         totalUsers: cohort.users,
         premiumUsers: cohort.premium_users,
@@ -419,7 +420,7 @@ class AnalyticsService {
 
     } catch (error) {
       logger.error('Failed to calculate cohort analysis', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         type: 'cohort_error'
       });
       return [];
@@ -453,7 +454,7 @@ class AnalyticsService {
         logger.info('Periodic KPI calculation started');
       } catch (error) {
         logger.error('Periodic KPI calculation failed', {
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
           type: 'periodic_kpi_error'
         });
       }

@@ -151,13 +151,19 @@ const nextConfig = {
       config.optimization.minimize = true;
       
       // Remove console.log in production (keep console.error and console.warn)
-      if (!isServer) {
-        config.optimization.minimizer[0].options.minimizer.options.compress.drop_console = true;
-        config.optimization.minimizer[0].options.minimizer.options.compress.pure_funcs = [
-          'console.log',
-          'console.info',
-          'console.debug',
-        ];
+      if (!isServer && config.optimization.minimizer && config.optimization.minimizer[0]) {
+        const minimizer = config.optimization.minimizer[0];
+        if (minimizer.options && minimizer.options.minimizer && minimizer.options.minimizer.options) {
+          minimizer.options.minimizer.options.compress = {
+            ...minimizer.options.minimizer.options.compress,
+            drop_console: true,
+            pure_funcs: [
+              'console.log',
+              'console.info',
+              'console.debug',
+            ]
+          };
+        }
       }
     }
     
@@ -177,7 +183,8 @@ const nextConfig = {
   
   // Environment variables to expose to the client
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    // Only include environment variables that should be exposed to the client
+    // CUSTOM_KEY: process.env.CUSTOM_KEY || '',
   },
   
   // Experimental features for performance
@@ -186,12 +193,12 @@ const nextConfig = {
     esmExternals: true,
     // Optimize server components
     serverComponentsExternalPackages: ['sqlite3', 'sqlite'],
-    // Enable optimized CSS loading
-    optimizeCss: true,
+    // Disable CSS optimization to avoid critters error
+    optimizeCss: false,
   },
   
-  // Output configuration for deployment
-  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+  // Output configuration for deployment (disable for now to use npm start)
+  // output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   
   // Disable source maps in production for security
   productionBrowserSourceMaps: false,

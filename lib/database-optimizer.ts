@@ -109,7 +109,7 @@ class DatabaseOptimizer {
       logger.error('Database query failed', {
         query: this.sanitizeQuery(query),
         duration,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         type: 'query_error'
       });
 
@@ -184,7 +184,9 @@ class DatabaseOptimizer {
     // Limit cache size to prevent memory leaks
     if (this.queryCache.size > 1000) {
       const firstKey = this.queryCache.keys().next().value;
-      this.queryCache.delete(firstKey);
+      if (firstKey) {
+        this.queryCache.delete(firstKey);
+      }
     }
 
     this.queryCache.set(key, {
@@ -265,7 +267,7 @@ class DatabaseOptimizer {
     return {
       size: this.queryCache.size,
       hitRate: 0, // Would need to track hits/misses
-      memoryUsage: JSON.stringify([...this.queryCache.entries()]).length
+      memoryUsage: JSON.stringify(Array.from(this.queryCache.entries())).length
     };
   }
 
@@ -305,7 +307,7 @@ class DatabaseOptimizer {
 
     } catch (error) {
       logger.error('Database optimization analysis failed', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         type: 'optimization_error'
       });
     }

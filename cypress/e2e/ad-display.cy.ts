@@ -242,11 +242,9 @@ describe('Ad Display/Hide E2E Tests', () => {
       cy.loginAsFreeUser();
       
       // Slow down network to see loading states
-      cy.intercept('GET', '**/pagead/js/adsbygoogle.js', (req) => {
-        req.reply((res) => {
-          res.delay(2000);
-          res.send();
-        });
+      cy.intercept('GET', '**/pagead/js/adsbygoogle.js', {
+        delay: 2000,
+        body: ''
       });
       
       cy.visit('/');

@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     monitoring.recordResponseTime('/api/health', duration, 500);
     
     logger.error('Health check endpoint failed', {
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       duration,
       type: 'health_check_error'
     });

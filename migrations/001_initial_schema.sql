@@ -34,13 +34,14 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 CREATE TABLE IF NOT EXISTS favorites (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
-  item_type TEXT NOT NULL CHECK (item_type IN ('food', 'recipe')),
+  type TEXT NOT NULL CHECK (type IN ('food', 'recipe')),
   item_id TEXT NOT NULL,
-  item_data TEXT NOT NULL,
+  item_data TEXT,
+  notes TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  UNIQUE(user_id, item_type, item_id)
+  UNIQUE(user_id, type, item_id)
 );
 
 -- Shopping list table
@@ -78,7 +79,7 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe_customer_id ON subscriptions(stripe_customer_id);
 CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON favorites(user_id);
-CREATE INDEX IF NOT EXISTS idx_favorites_item_type ON favorites(item_type);
+CREATE INDEX IF NOT EXISTS idx_favorites_type ON favorites(type);
 CREATE INDEX IF NOT EXISTS idx_shopping_list_user_id ON shopping_list(user_id);
 CREATE INDEX IF NOT EXISTS idx_shopping_list_checked ON shopping_list(checked);
 CREATE INDEX IF NOT EXISTS idx_nutrition_calculations_user_id ON nutrition_calculations(user_id);

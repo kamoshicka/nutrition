@@ -196,7 +196,7 @@ class ErrorMonitoringService {
     // Record metric
     monitoring.recordMetric('error_reported', 1, 'count', {
       level,
-      fingerprint: errorReport.fingerprint
+      fingerprint: errorReport.fingerprint || 'unknown'
     });
 
     return errorId;
@@ -228,7 +228,7 @@ class ErrorMonitoringService {
       }
     } catch (error) {
       logger.error('Failed to send error to external services', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         originalErrorId: errorReport.id,
         type: 'external_service_error'
       });
@@ -263,7 +263,7 @@ class ErrorMonitoringService {
       }
     } catch (error) {
       logger.error('Failed to send to custom error service', {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         endpoint
       });
     }
@@ -308,7 +308,7 @@ class ErrorMonitoringService {
         const matchingErrors = rule.condition.pattern
           ? recentErrors.filter(e => 
               e.level === rule.condition.pattern || 
-              e.message.toLowerCase().includes(rule.condition.pattern.toLowerCase())
+              e.message.toLowerCase().includes(rule.condition.pattern?.toLowerCase() || '')
             )
           : recentErrors;
         return matchingErrors.length >= rule.condition.threshold;
@@ -351,7 +351,7 @@ class ErrorMonitoringService {
         logger.error('Failed to execute alert action', {
           actionType: action.type,
           ruleId: rule.id,
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
           type: 'alert_action_error'
         });
       }
@@ -373,11 +373,26 @@ class ErrorMonitoringService {
         break;
 
       case 'log':
-        logger[action.config.level || 'warn']('Alert triggered', {
-          rule: rule.name,
-          error: errorReport.message,
-          type: 'alert_log'
-        });
+        const logLevel = action.config.level || 'warn';
+        if (logLevel === 'error') {
+          logger.error('Alert triggered', {
+            rule: rule.name,
+            error: errorReport.message,
+            type: 'alert_log'
+          });
+        } else if (logLevel === 'info') {
+          logger.info('Alert triggered', {
+            rule: rule.name,
+            error: errorReport.message,
+            type: 'alert_log'
+          });
+        } else {
+          logger.warn('Alert triggered', {
+            rule: rule.name,
+            error: errorReport.message,
+            type: 'alert_log'
+          });
+        }
         break;
     }
   }
@@ -452,7 +467,9 @@ class ErrorMonitoringService {
 
     recentErrors.forEach(error => {
       errorsByLevel[error.level] = (errorsByLevel[error.level] || 0) + 1;
-      errorsByFingerprint[error.fingerprint] = (errorsByFingerprint[error.fingerprint] || 0) + 1;
+      if (error.fingerprint) {
+        errorsByFingerprint[error.fingerprint] = (errorsByFingerprint[error.fingerprint] || 0) + 1;
+      }
     });
 
     const topErrors = Object.entries(errorsByFingerprint)

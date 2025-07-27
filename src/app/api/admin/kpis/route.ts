@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     monitoring.recordResponseTime('/api/admin/kpis', duration, 500);
 
     logger.error('KPI dashboard request failed', {
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       duration,
       type: 'admin_kpi_error'
     });
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Failed to fetch KPI data',
-        message: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
       },
       { status: 500 }
     );
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
     monitoring.recordResponseTime('/api/admin/kpis', duration, 500);
 
     logger.error('Admin action failed', {
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       duration,
       type: 'admin_action_error'
     });
@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         error: 'Action failed',
-        message: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
       },
       { status: 500 }
     );
