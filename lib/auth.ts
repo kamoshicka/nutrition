@@ -28,10 +28,8 @@ export interface User {
     currentPeriodEnd?: Date;
     cancelAtPeriodEnd: boolean;
   };
-  searchCount: {
-    count: number;
-    lastResetDate: string;
-  };
+  searchCount: number;
+  searchCountResetDate: Date;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -86,10 +84,8 @@ export const authOptions: NextAuthOptions = {
               status: 'free',
               cancelAtPeriodEnd: false,
             },
-            searchCount: {
-              count: user.search_count || 0,
-              lastResetDate: user.search_count_reset_date || new Date().toISOString(),
-            },
+            searchCount: user.search_count || 0,
+            searchCountResetDate: new Date(user.search_count_reset_date || new Date().toISOString()),
           };
         } catch (error) {
           console.error('Auth error:', error);
@@ -107,15 +103,25 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      console.log('JWT Callback - User:', user);
+      console.log('JWT Callback - Token before:', token);
+      
       if (user && 'subscription' in user) {
         token.user = user as User;
       }
+      
+      console.log('JWT Callback - Token after:', token);
       return token;
     },
     async session({ session, token }) {
+      console.log('Session Callback - Token:', token);
+      console.log('Session Callback - Session before:', session);
+      
       if (token.user) {
         session.user = token.user as User;
       }
+      
+      console.log('Session Callback - Session after:', session);
       return session;
     },
   },
@@ -196,10 +202,8 @@ export async function getUserById(id: string): Promise<User | null> {
         status: 'free',
         cancelAtPeriodEnd: false,
       },
-      searchCount: {
-        count: user.search_count || 0,
-        lastResetDate: user.search_count_reset_date || new Date().toISOString(),
-      },
+      searchCount: user.search_count || 0,
+      searchCountResetDate: new Date(user.search_count_reset_date || new Date().toISOString()),
     };
   } catch (error) {
     console.error('Error getting user:', error);

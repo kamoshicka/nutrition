@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Subscription will be cancelled at the end of the current period',
       cancelAtPeriodEnd: true,
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+      currentPeriodEnd: new Date((subscription as any).current_period_end * 1000).toISOString(),
     });
 
   } catch (error) {

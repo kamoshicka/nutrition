@@ -46,10 +46,10 @@ export async function GET(request: NextRequest) {
       },
       stripe: stripeSubscription ? {
         status: stripeSubscription.status,
-        cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
-        currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-        trialEnd: stripeSubscription.trial_end ? new Date(stripeSubscription.trial_end * 1000) : null,
+        cancelAtPeriodEnd: (stripeSubscription as any).cancel_at_period_end,
+        currentPeriodStart: new Date((stripeSubscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((stripeSubscription as any).current_period_end * 1000),
+        trialEnd: (stripeSubscription as any).trial_end ? new Date((stripeSubscription as any).trial_end * 1000) : null,
       } : null,
       isPremium: user.subscription.status === 'premium',
       isCancelled: user.subscription.status === 'cancelled',
@@ -108,9 +108,9 @@ export async function POST(request: NextRequest) {
       status,
       stripeCustomerId: stripeSubscription.customer as string,
       stripeSubscriptionId: stripeSubscription.id,
-      currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-      cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+      currentPeriodStart: new Date((stripeSubscription as any).current_period_start * 1000),
+      currentPeriodEnd: new Date((stripeSubscription as any).current_period_end * 1000),
+      cancelAtPeriodEnd: (stripeSubscription as any).cancel_at_period_end,
     });
 
     return NextResponse.json({
@@ -118,9 +118,9 @@ export async function POST(request: NextRequest) {
       message: 'Subscription status synchronized',
       subscription: {
         status,
-        cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
-        currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+        cancelAtPeriodEnd: (stripeSubscription as any).cancel_at_period_end,
+        currentPeriodStart: new Date((stripeSubscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((stripeSubscription as any).current_period_end * 1000),
       },
     });
 

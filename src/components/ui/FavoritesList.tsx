@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useFavorites } from '../../hooks/useFavorites';
 import { FavoriteButton } from './FavoriteButton';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 
 interface FavoritesListProps {
   itemType?: 'food' | 'recipe';

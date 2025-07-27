@@ -1,41 +1,20 @@
-'use client';
+import React from 'react';
 
 interface LoadingSpinnerProps {
-  size?: 'small' | 'medium' | 'large';
-  message?: string;
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
-/**
- * LoadingSpinner component for displaying loading states
- * 
- * This component shows a spinner animation with an optional message
- * to indicate that content is being loaded.
- */
-export default function LoadingSpinner({
-  size = 'medium',
-  message = 'データを読み込み中...',
-  className = '',
-}: LoadingSpinnerProps) {
-  // Determine spinner size
-  const spinnerSizeClasses = {
-    small: 'w-4 h-4 border-2',
-    medium: 'w-8 h-8 border-3',
-    large: 'w-12 h-12 border-4',
+export function LoadingSpinner({ size = 'md', className = '' }: LoadingSpinnerProps) {
+  const sizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8'
   };
 
-  const sizeClass = spinnerSizeClasses[size];
-
   return (
-    <div className={`flex flex-col items-center justify-center p-4 ${className}`}>
-      <div
-        className={`${sizeClass} border-t-blue-500 border-r-blue-500 border-b-blue-200 border-l-blue-200 rounded-full animate-spin`}
-        role="status"
-        aria-label="読み込み中"
-      ></div>
-      {message && (
-        <p className="mt-3 text-sm text-gray-600">{message}</p>
-      )}
-    </div>
+    <div className={`animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 ${sizeClasses[size]} ${className}`} />
   );
 }
+
+export default LoadingSpinner;

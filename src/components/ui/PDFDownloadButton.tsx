@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 
 interface PDFDownloadButtonProps {
   onDownload: () => Promise<void>;

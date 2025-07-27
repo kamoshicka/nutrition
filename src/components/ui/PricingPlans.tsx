@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 
 interface PricingPlansProps {
   className?: string;
@@ -49,6 +49,12 @@ export function PricingPlans({
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        
+        if (errorData.developmentMode) {
+          throw new Error(errorData.message || 'Stripe設定が不完全です');
+        }
+        
         throw new Error('Failed to create checkout session');
       }
 
@@ -56,7 +62,9 @@ export function PricingPlans({
       window.location.href = url;
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      setError('決済ページの作成に失敗しました。もう一度お試しください。');
+      
+      const errorMessage = error instanceof Error ? error.message : '決済ページの作成に失敗しました。もう一度お試しください。';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

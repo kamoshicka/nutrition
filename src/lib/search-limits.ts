@@ -34,7 +34,8 @@ export async function getUserSearchUsage(userId: string): Promise<SearchUsage> {
     const currentMonth = getCurrentMonth();
     
     // Reset count if it's a new month
-    if (user.searchCount.lastResetDate !== currentMonth) {
+    const lastResetMonth = `${user.searchCountResetDate.getFullYear()}-${String(user.searchCountResetDate.getMonth() + 1).padStart(2, '0')}`;
+    if (lastResetMonth !== currentMonth) {
       await resetUserSearchCount(userId);
       return {
         userId,
@@ -47,7 +48,7 @@ export async function getUserSearchUsage(userId: string): Promise<SearchUsage> {
       };
     }
 
-    const searchCount = user.searchCount.count || 0;
+    const searchCount = user.searchCount || 0;
     const canSearch = isPremium || searchCount < SEARCH_LIMITS.FREE_SEARCHES_PER_MONTH;
     const remainingSearches = isPremium 
       ? SEARCH_LIMITS.PREMIUM_UNLIMITED 
@@ -56,7 +57,7 @@ export async function getUserSearchUsage(userId: string): Promise<SearchUsage> {
     return {
       userId,
       searchCount,
-      lastResetDate: new Date(user.searchCount.lastResetDate),
+      lastResetDate: user.searchCountResetDate,
       currentMonth,
       canSearch,
       remainingSearches,

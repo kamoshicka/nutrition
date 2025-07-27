@@ -132,8 +132,10 @@ export function checkPremiumAccess(user: any): {
 /**
  * Premium feature wrapper for API routes
  */
-export function withPremiumCheck(handler: (req: NextRequest) => Promise<NextResponse>) {
-  return async (req: NextRequest) => {
+export function withPremiumCheck<T extends any[]>(
+  handler: (req: NextRequest, ...args: T) => Promise<NextResponse>
+) {
+  return async (req: NextRequest, ...args: T) => {
     const premiumCheck = await premiumCheckMiddleware(req);
     
     // If middleware returns a response (error), return it
@@ -142,7 +144,7 @@ export function withPremiumCheck(handler: (req: NextRequest) => Promise<NextResp
     }
     
     // Otherwise, proceed with the handler
-    return handler(req);
+    return handler(req, ...args);
   };
 }
 

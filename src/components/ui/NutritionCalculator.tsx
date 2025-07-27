@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { SelectedFood, NutritionTotals, calculateTotalNutrition, compareWithRecommendedIntake, getAvailableAgeGroups, formatNutritionValue } from '../../lib/nutrition';
-import { FoodNutrition, searchFoodNutrition, getAllFoodNutrition } from '../../lib/nutrition-data';
-import { LoadingSpinner } from './LoadingSpinner';
+import { searchFoodNutrition, getAllFoodNutrition } from '../../lib/nutrition-data';
+import { FoodNutrition } from '../../lib/nutrition';
+import LoadingSpinner from './LoadingSpinner';
 
 interface NutritionCalculatorProps {
   className?: string;
@@ -93,7 +94,7 @@ export function NutritionCalculator({
 
   if (!hasPremiumAccess) {
     return (
-      <div className={`bg-blue-50 border border-blue-200 rounded-lg p-6 text-center ${className}`}>
+      <div className={`bg-blue-50 border border-blue-200 rounded-lg p-6 text-center ${className}`} data-testid="nutrition-calculator-upgrade-prompt">
         <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -111,6 +112,7 @@ export function NutritionCalculator({
         <Link
           href="/pricing"
           className="inline-block bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors font-medium"
+          data-testid="upgrade-button"
         >
           プレミアムプランを見る
         </Link>
@@ -175,7 +177,7 @@ export function NutritionCalculator({
     : null;
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
+    <div className={`bg-white rounded-lg border border-gray-200 ${className}`} data-testid="nutrition-calculator">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-900 mb-2">栄養計算機</h2>

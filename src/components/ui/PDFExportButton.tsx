@@ -122,11 +122,12 @@ export function PDFExportButton({
     return (
       <>
         <PDFDownloadButton
-          onDownload={() => setIsDialogOpen(true)}
+          onDownload={async () => setIsDialogOpen(true)}
           filename={getDefaultFilename()}
           className={className}
           size={size}
           variant={variant}
+          data-testid="pdf-export-button"
         >
           {children}
         </PDFDownloadButton>

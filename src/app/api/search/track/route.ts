@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
     const { increment = 1 } = body;
 
     // Still track search count for analytics, but no limits for any user
-    const newSearchCount = await updateUserSearchCount(session.user.id, increment);
+    const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+    const currentSearchCount = session.user.searchCount || 0;
+    const newSearchCount = await updateUserSearchCount(session.user.id, currentSearchCount + increment, currentMonth);
 
     return NextResponse.json({
       searchCount: newSearchCount,

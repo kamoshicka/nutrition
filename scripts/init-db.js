@@ -1,3 +1,5 @@
+// Use ts-node to run TypeScript files
+require('ts-node/register');
 const { initializeDatabase } = require('../lib/database');
 
 async function main() {

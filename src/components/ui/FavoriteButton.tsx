@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -55,7 +55,7 @@ export function FavoriteButton({
   const config = sizeConfig[size];
 
   // Check if item is in favorites
-  const checkFavoriteStatus = async () => {
+  const checkFavoriteStatus = useCallback(async () => {
     if (status !== 'authenticated' || !session?.user?.id) {
       return;
     }
@@ -70,7 +70,7 @@ export function FavoriteButton({
     } catch (error) {
       console.error('Error checking favorite status:', error);
     }
-  };
+  }, [status, session?.user?.id, itemType, itemId]);
 
   // Toggle favorite status
   const toggleFavorite = async () => {
@@ -136,7 +136,7 @@ export function FavoriteButton({
   // Check favorite status on mount and when session changes
   useEffect(() => {
     checkFavoriteStatus();
-  }, [session, status, itemType, itemId]);
+  }, [checkFavoriteStatus, session, status, itemType, itemId]);
 
   // Don't show for unauthenticated users
   if (status !== 'authenticated') {
@@ -159,10 +159,11 @@ export function FavoriteButton({
       <button
         onClick={toggleFavorite}
         disabled={isLoading}
+        data-testid="favorite-button"
         className={`
           inline-flex items-center justify-center ${config.button} rounded-full border transition-all duration-200
           ${isFavorite 
-            ? 'bg-red-50 border-red-300 text-red-600 hover:bg-red-100' 
+            ? 'bg-red-50 border-red-300 text-red-600 hover:bg-red-100 favorited' 
             : 'bg-white border-gray-300 text-gray-400 hover:text-red-500 hover:border-red-300'
           }
           ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}

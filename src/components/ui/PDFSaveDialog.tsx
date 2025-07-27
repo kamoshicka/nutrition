@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 
 interface PDFSaveDialogProps {
   isOpen: boolean;

@@ -26,7 +26,7 @@ export function AdSenseAd({
   fallback 
 }: AdSenseAdProps) {
   const { data: session, status } = useSession();
-  const adRef = useRef<HTMLDivElement>(null);
+  const adRef = useRef<HTMLModElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -128,7 +128,7 @@ export function AdSenseAd({
   };
 
   return (
-    <div className={`ad-container ${className}`} style={combinedStyle}>
+    <div className={`ad-container ${className}`} style={combinedStyle} data-testid="ad-container">
       {/* Ad label for transparency */}
       <div className="text-xs text-gray-400 mb-1 text-center">
         スポンサー
@@ -139,14 +139,19 @@ export function AdSenseAd({
         ref={adRef}
         className="adsbygoogle"
         style={combinedStyle}
+        data-testid={`${placement}-ad`}
         {...adAttributes}
       />
       
       {/* Loading state */}
       {!isLoaded && (
-        <div className="flex items-center justify-center bg-gray-100 border border-gray-200 rounded-lg" style={combinedStyle}>
+        <div 
+          className="flex items-center justify-center bg-gray-100 border border-gray-200 rounded-lg" 
+          style={combinedStyle}
+          data-testid="ad-loading-placeholder"
+        >
           <div className="text-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400 mx-auto mb-2"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400 mx-auto mb-2" data-testid="ad-loading-spinner"></div>
             <p className="text-xs text-gray-500">広告を読み込み中...</p>
           </div>
         </div>

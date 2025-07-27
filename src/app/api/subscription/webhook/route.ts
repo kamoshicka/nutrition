@@ -89,9 +89,9 @@ async function handleSubscriptionUpdate(subscription: any) {
       status,
       stripeCustomerId: subscription.customer,
       stripeSubscriptionId: subscription.id,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+      currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+      cancelAtPeriodEnd: (subscription as any).cancel_at_period_end,
     });
 
     console.log(`Updated subscription for user ${userId}: ${status}`);
@@ -113,8 +113,8 @@ async function handleSubscriptionDeleted(subscription: any) {
       status: 'free',
       stripeCustomerId: subscription.customer,
       stripeSubscriptionId: subscription.id,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+      currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
       cancelAtPeriodEnd: true,
     });
 
@@ -152,8 +152,8 @@ async function handlePaymentFailed(invoice: any) {
             status: 'cancelled',
             stripeCustomerId: subscription.customer as string,
             stripeSubscriptionId: subscription.id,
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             cancelAtPeriodEnd: true,
           });
         }

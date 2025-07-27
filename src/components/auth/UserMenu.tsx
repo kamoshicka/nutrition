@@ -11,6 +11,15 @@ export default function UserMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  // Debug logging for authentication issues
+  useEffect(() => {
+    console.log('UserMenu - Auth Status:', status);
+    console.log('UserMenu - Session:', session);
+    if (session) {
+      console.log('UserMenu - Session User:', session.user);
+    }
+  }, [session, status]);
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,7 +47,7 @@ export default function UserMenu() {
     );
   }
 
-  if (!session) {
+  if (!session || !session.user) {
     return (
       <div className="flex items-center space-x-2">
         <Link

@@ -5,6 +5,20 @@ import { stripe, STRIPE_CONFIG } from '@/lib/stripe-server';
 
 export async function POST(request: NextRequest) {
   try {
+    // 開発環境でのStripe設定チェック
+    if (process.env.NODE_ENV === 'development' && 
+        (STRIPE_CONFIG.secretKey.includes('placeholder') || 
+         STRIPE_CONFIG.priceId.includes('placeholder'))) {
+      return NextResponse.json(
+        { 
+          error: 'Stripe not configured for development',
+          message: 'Stripe設定が不完全です。実際の決済を行うには、Stripeアカウントの設定が必要です。',
+          developmentMode: true
+        },
+        { status: 400 }
+      );
+    }
+
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {

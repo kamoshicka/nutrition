@@ -76,7 +76,7 @@ export function AffiliateWidget({
   }
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 p-4 ${className}`}>
+    <div className={`bg-white rounded-lg border border-gray-200 p-4 ${className}`} data-testid="affiliate-widget">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-gray-900 text-sm">{title}</h3>
@@ -94,11 +94,12 @@ export function AffiliateWidget({
 
       {/* Products List */}
       {!isLoading && products.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-3" data-testid="affiliate-products">
           {products.map((product) => (
             <div
               key={product.id}
               className="flex items-start space-x-3 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              data-testid="affiliate-product"
             >
               {/* Product Image */}
               <div className="flex-shrink-0 w-12 h-12 bg-gray-200 rounded overflow-hidden">
@@ -171,6 +172,7 @@ export function AffiliateWidget({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => handleProductClick(product)}
+                  data-testid="product-link"
                   className={`inline-flex items-center mt-2 text-xs font-medium transition-colors ${
                     product.provider === 'rakuten'
                       ? 'text-red-600 hover:text-red-800'
@@ -213,7 +215,7 @@ export function AffiliateWidget({
       )}
 
       {/* Disclosure */}
-      <div className="mt-3 pt-2 border-t border-gray-100">
+      <div className="mt-3 pt-2 border-t border-gray-100" data-testid="affiliate-disclosure">
         <p className="text-xs text-gray-400 leading-relaxed">
           当サイトはアフィリエイト広告を利用しています
         </p>

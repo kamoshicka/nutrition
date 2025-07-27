@@ -70,6 +70,20 @@ export function useAffiliate() {
     }
   }, [session, status]);
 
+  // Track product impression
+  const trackImpression = useCallback((foodName: string, productCount: number) => {
+    setAnalytics(prev => {
+      const newImpressions = prev.impressions + productCount;
+      const newCtr = prev.clicks > 0 ? (prev.clicks / newImpressions) * 100 : 0;
+      
+      return {
+        ...prev,
+        impressions: newImpressions,
+        ctr: newCtr
+      };
+    });
+  }, []);
+
   // Get product recommendations with caching
   const getProducts = useCallback(async (
     foodName: string,
@@ -101,7 +115,7 @@ export function useAffiliate() {
       console.error('Error getting products:', error);
       throw error;
     }
-  }, [productCache]);
+  }, [productCache, trackImpression]);
 
   // Track product click
   const trackClick = useCallback((
@@ -141,20 +155,6 @@ export function useAffiliate() {
         clicks: newClicks,
         ctr: newCtr,
         topProducts: newTopProducts
-      };
-    });
-  }, []);
-
-  // Track product impression
-  const trackImpression = useCallback((foodName: string, productCount: number) => {
-    setAnalytics(prev => {
-      const newImpressions = prev.impressions + productCount;
-      const newCtr = prev.clicks > 0 ? (prev.clicks / newImpressions) * 100 : 0;
-      
-      return {
-        ...prev,
-        impressions: newImpressions,
-        ctr: newCtr
       };
     });
   }, []);

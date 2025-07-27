@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useShoppingList } from '../../hooks/useShoppingList';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 
 interface ShoppingListProps {
   className?: string;

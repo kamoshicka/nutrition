@@ -10,7 +10,7 @@ import {
   getAffiliateDisclosure
 } from '../../lib/affiliate';
 import { useSession } from 'next-auth/react';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 
 interface AffiliateProductsProps {
   foodName: string;
@@ -199,25 +199,31 @@ export function AffiliateProducts({
                 </div>
 
                 {/* Buy Button */}
-                <a
-                  href={product.affiliateUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleProductClick(product)}
-                  className={`mt-3 w-full inline-flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                    product.availability
-                      ? product.provider === 'rakuten'
+                {product.availability ? (
+                  <a
+                    href={product.affiliateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => handleProductClick(product)}
+                    className={`mt-3 w-full inline-flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                      product.provider === 'rakuten'
                         ? 'bg-red-600 text-white hover:bg-red-700'
                         : 'bg-orange-600 text-white hover:bg-orange-700'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                  disabled={!product.availability}
-                >
-                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                  {product.provider === 'rakuten' ? '楽天で購入' : 'Amazonで購入'}
-                </a>
+                    }`}
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    {product.provider === 'rakuten' ? '楽天で購入' : 'Amazonで購入'}
+                  </a>
+                ) : (
+                  <div className="mt-3 w-full inline-flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md bg-gray-300 text-gray-500 cursor-not-allowed">
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    在庫切れ
+                  </div>
+                )}
               </div>
             </div>
           ))}
