@@ -1,6 +1,9 @@
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import path from 'path';
+import { withOptimizedQuery } from './database-optimizer';
+import { logger } from './logger';
+import { errorMonitoring } from './error-monitoring';
 
 let db: Database | null = null;
 
@@ -119,4 +122,86 @@ export async function closeDatabase(): Promise<void> {
     await db.close();
     db = null;
   }
+}
+
+/**
+ * Execute an optimized database query with monitoring and caching
+ */
+export async function executeOptimizedQuery<T>(
+  query: string,
+  params: any[] = [],
+  options?: {
+    cache?: boolean;
+    cacheKey?: string;
+    timeout?: number;
+  }
+): Promise<T> {
+  try {
+    const database = await getDatabase();
+    return await withOptimizedQuery<T>(database, query, params, options);
+  } catch (error) {
+    errorMonitoring.reportError(error, {
+      url: 'database_query',
+      method: 'QUERY'
+    });
+    throw error;
+  }
+}
+
+/**
+ * Get user by ID with caching
+ */
+export async function getUserById(userId: string): Promise<any> {
+  return executeOptimizedQuery(
+    'SELECT * FROM users WHERE id = ?',
+    [userId],
+    { cache: true, cacheKey: `user_${userId}` }
+  );
+}
+
+/**
+ * Get user subscription with caching
+ */
+export async function getUserSubscription(userId: string): Promise<any> {
+  return executeOptimizedQuery(
+    'SELECT * FROM subscriptions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1',
+    [userId],
+    { cache: true, cacheKey: `subscription_${userId}` }
+  );
+}
+
+/**
+ * Get user favorites with pagination
+ */
+export async function getUserFavorites(
+  userId: string, 
+  limit: number = 50, 
+  offset: number = 0
+): Promise<any[]> {
+  return executeOptimizedQuery(
+    'SELECT * FROM favorites WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?',
+    [userId, limit, offset],
+    { cache: true, cacheKey: `favorites_${userId}_${limit}_${offset}` }
+  );
+}
+
+/**
+ * Get user shopping list items
+ */
+export async function getShoppingListItems(userId: string): Promise<any[]> {
+  return executeOptimizedQuery(
+    'SELECT * FROM shopping_list WHERE user_id = ? ORDER BY created_at DESC',
+    [userId],
+    { cache: true, cacheKey: `shopping_list_${userId}` }
+  );
+}
+
+/**
+ * Update user search count with optimized query
+ */
+export async function updateUserSearchCount(userId: string): Promise<void> {
+  await executeOptimizedQuery(
+    'UPDATE users SET search_count = search_count + 1 WHERE id = ?',
+    [userId]
+  );
 }
