@@ -96,8 +96,44 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating checkout session:', error);
     
+    // Stripeエラーの詳細を提供
+    if (error instanceof Error) {
+      // Stripe APIエラーの場合
+      if ('type' in error && error.type === 'StripeInvalidRequestError') {
+        return NextResponse.json(
+          { 
+            error: 'Invalid Stripe configuration',
+            message: 'Stripe設定に問題があります。管理者にお問い合わせください。',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          },
+          { status: 400 }
+        );
+      }
+      
+      // Stripe認証エラーの場合
+      if ('type' in error && error.type === 'StripeAuthenticationError') {
+        return NextResponse.json(
+          { 
+            error: 'Stripe authentication failed',
+            message: 'Stripe認証に失敗しました。設定を確認してください。',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          },
+          { status: 401 }
+        );
+      }
+      
+      return NextResponse.json(
+        { 
+          error: 'Failed to create checkout session',
+          message: 'チェックアウトセッションの作成に失敗しました。',
+          details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: 'Unknown error occurred' },
       { status: 500 }
     );
   }

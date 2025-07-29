@@ -51,20 +51,49 @@ export function PricingPlans({
       if (!response.ok) {
         const errorData = await response.json();
         
+        // 開発環境でのStripe設定不備
         if (errorData.developmentMode) {
-          throw new Error(errorData.message || 'Stripe設定が不完全です');
+          setError(
+            `${errorData.message}\n\n開発環境では実際のStripeキーが必要です。\n.env.localファイルでSTRIPE_SECRET_KEYとSTRIPE_PRICE_IDを設定してください。`
+          );
+          return;
         }
         
-        throw new Error('Failed to create checkout session');
+        // Stripe認証エラー
+        if (errorData.error === 'Stripe authentication failed') {
+          setError('決済システムの設定に問題があります。管理者にお問い合わせください。');
+          return;
+        }
+        
+        // Stripe設定エラー
+        if (errorData.error === 'Invalid Stripe configuration') {
+          setError('決済システムの設定に問題があります。管理者にお問い合わせください。');
+          return;
+        }
+        
+        // その他のエラー
+        setError(errorData.message || '決済ページの作成に失敗しました。もう一度お試しください。');
+        return;
       }
 
       const { url } = await response.json();
+      
+      if (!url) {
+        setError('決済ページのURLが取得できませんでした。もう一度お試しください。');
+        return;
+      }
+      
+      // 決済ページにリダイレクト
       window.location.href = url;
     } catch (error) {
       console.error('Error creating checkout session:', error);
       
-      const errorMessage = error instanceof Error ? error.message : '決済ページの作成に失敗しました。もう一度お試しください。';
-      setError(errorMessage);
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        setError('ネットワークエラーが発生しました。インターネット接続を確認してもう一度お試しください。');
+      } else {
+        const errorMessage = error instanceof Error ? error.message : '決済ページの作成に失敗しました。もう一度お試しください。';
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -312,8 +341,25 @@ export function PricingPlans({
 
       {/* Error Message */}
       {error && (
-        <div className="max-w-md mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-700 text-sm">{error}</p>
+        <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-start">
+            <svg className="w-5 h-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <div className="text-red-700 text-sm">
+              {error.split('\n').map((line, index) => (
+                <p key={index} className={index > 0 ? 'mt-2' : ''}>
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="mt-3 text-red-600 hover:text-red-800 text-sm font-medium"
+          >
+            閉じる
+          </button>
         </div>
       )}
 
