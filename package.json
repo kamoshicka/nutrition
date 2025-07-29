@@ -29,7 +29,11 @@
     "monitor:health": "curl -s http://localhost:3000/api/health | jq",
     "monitor:performance": "curl -s -H 'Authorization: Bearer $ADMIN_API_TOKEN' http://localhost:3000/api/admin/performance | jq",
     "monitor:kpis": "curl -s -H 'Authorization: Bearer $ADMIN_API_TOKEN' http://localhost:3000/api/admin/kpis | jq",
-    "test:production-setup": "node scripts/test-production-setup.js"
+    "test:production-setup": "node scripts/test-production-setup.js",
+    "env:check": "node scripts/env-setup.js check",
+    "env:generate": "node scripts/env-setup.js generate",
+    "env:generate-all": "node scripts/env-setup.js generate-all",
+    "env:validate": "node scripts/env-setup.js validate"
   },
   "dependencies": {
     "@stripe/stripe-js": "^7.6.1",
