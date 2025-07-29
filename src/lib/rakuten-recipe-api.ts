@@ -1,5 +1,6 @@
 import { RakutenRecipe, RakutenRecipeCategory, RakutenRecipeSearchResponse, RakutenRecipeCategoryResponse } from '@/types';
 import { config } from './config';
+import { getCachedHealthStatus } from './rakuten-health-monitor';
 
 // 楽天APIキーの確認（実行時にチェック）
 const hasRakutenKey = !!process.env.RAKUTEN_APPLICATION_ID;
@@ -79,6 +80,12 @@ function getMockRecipes(keyword: string): RakutenRecipe[] {
 async function makeRakutenRequest<T>(endpoint: string, params: Record<string, string | number> = {}): Promise<T> {
         if (!config.rakuten.applicationId) {
                 throw new Error('楽天APIキーが設定されていません');
+        }
+
+        // Check cached health status before making request
+        const healthStatus = getCachedHealthStatus();
+        if (healthStatus && !healthStatus.isHealthy) {
+                console.warn('Rakuten API is unhealthy, request may fail:', healthStatus.error);
         }
 
         // レート制限の適用

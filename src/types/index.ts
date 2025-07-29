@@ -200,3 +200,27 @@ export interface RakutenRecipeCategoryResponse {
     small: RakutenRecipeCategory[];
   };
 }
+
+// Health monitoring types
+export interface HealthStatus {
+  isHealthy: boolean;
+  lastChecked: Date;
+  responseTime?: number;
+  error?: string;
+  rateLimitStatus?: {
+    remaining: number;
+    resetTime: Date;
+  };
+  apiVersion?: string;
+  endpoint?: string;
+}
+
+export interface HealthCheckResult {
+  status: HealthStatus;
+  details: {
+    connectionTest: boolean;
+    authenticationTest: boolean;
+    rateLimitCheck: boolean;
+    responseTimeMs: number;
+  };
+}
