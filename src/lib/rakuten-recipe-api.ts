@@ -2,6 +2,54 @@ import { RakutenRecipe, RakutenRecipeCategory, RakutenRecipeSearchResponse, Raku
 import { config } from './config';
 import { getCachedHealthStatus } from './rakuten-health-monitor';
 
+// Error types for better error handling
+export enum RakutenApiErrorType {
+  AUTHENTICATION = 'AUTHENTICATION',
+  RATE_LIMIT = 'RATE_LIMIT',
+  NETWORK = 'NETWORK',
+  INVALID_RESPONSE = 'INVALID_RESPONSE',
+  CONFIGURATION = 'CONFIGURATION',
+  TIMEOUT = 'TIMEOUT',
+  SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE'
+}
+
+export class RakutenApiError extends Error {
+  public readonly type: RakutenApiErrorType;
+  public readonly statusCode?: number;
+  public readonly retryAfter?: number;
+  public readonly originalError?: Error;
+
+  constructor(
+    message: string,
+    type: RakutenApiErrorType,
+    statusCode?: number,
+    retryAfter?: number,
+    originalError?: Error
+  ) {
+    super(message);
+    this.name = 'RakutenApiError';
+    this.type = type;
+    this.statusCode = statusCode;
+    this.retryAfter = retryAfter;
+    this.originalError = originalError;
+  }
+}
+
+// Retry configuration
+interface RetryConfig {
+  maxAttempts: number;
+  baseDelay: number;
+  maxDelay: number;
+  backoffMultiplier: number;
+}
+
+const DEFAULT_RETRY_CONFIG: RetryConfig = {
+  maxAttempts: 3,
+  baseDelay: 1000, // 1 second
+  maxDelay: 30000, // 30 seconds
+  backoffMultiplier: 2
+};
+
 // 楽天APIキーの確認（実行時にチェック）
 const hasRakutenKey = !!process.env.RAKUTEN_APPLICATION_ID;
 const useMockData = process.env.USE_MOCK_RECIPES === 'true' || !hasRakutenKey;
@@ -33,6 +81,231 @@ class RateLimiter {
 }
 
 const rateLimiter = new RateLimiter(config.rakuten.rateLimit.requestsPerSecond);
+
+/**
+ * Sleep utility for retry delays
+ */
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Calculate exponential backoff delay
+ */
+function calculateBackoffDelay(attempt: number, config: RetryConfig): number {
+  const delay = config.baseDelay * Math.pow(config.backoffMultiplier, attempt - 1);
+  return Math.min(delay, config.maxDelay);
+}
+
+/**
+ * Parse retry-after header value
+ */
+function parseRetryAfter(retryAfterHeader: string | null): number | undefined {
+  if (!retryAfterHeader) return undefined;
+  
+  const seconds = parseInt(retryAfterHeader, 10);
+  return isNaN(seconds) ? undefined : seconds * 1000; // Convert to milliseconds
+}
+
+/**
+ * Enhanced error handler that creates appropriate RakutenApiError instances
+ */
+function handleApiError(error: any, response?: Response): RakutenApiError {
+  // Handle fetch errors (network issues, timeouts, etc.)
+  if (error instanceof TypeError && error.message.includes('fetch')) {
+    return new RakutenApiError(
+      'Network error: Unable to connect to Rakuten API',
+      RakutenApiErrorType.NETWORK,
+      undefined,
+      undefined,
+      error
+    );
+  }
+
+  // Handle timeout errors
+  if (error.name === 'AbortError' || error.message.includes('timeout')) {
+    return new RakutenApiError(
+      'Request timeout: Rakuten API did not respond within the expected time',
+      RakutenApiErrorType.TIMEOUT,
+      undefined,
+      undefined,
+      error
+    );
+  }
+
+  // Handle HTTP response errors
+  if (response) {
+    const retryAfter = parseRetryAfter(response.headers.get('retry-after'));
+    
+    switch (response.status) {
+      case 401:
+        return new RakutenApiError(
+          'Authentication failed: Invalid or expired API key',
+          RakutenApiErrorType.AUTHENTICATION,
+          401,
+          undefined,
+          error
+        );
+      
+      case 429:
+        return new RakutenApiError(
+          'Rate limit exceeded: Too many requests to Rakuten API',
+          RakutenApiErrorType.RATE_LIMIT,
+          429,
+          retryAfter,
+          error
+        );
+      
+      case 503:
+        return new RakutenApiError(
+          'Service unavailable: Rakuten API is temporarily down',
+          RakutenApiErrorType.SERVICE_UNAVAILABLE,
+          503,
+          retryAfter,
+          error
+        );
+      
+      default:
+        return new RakutenApiError(
+          `HTTP error ${response.status}: ${response.statusText}`,
+          RakutenApiErrorType.NETWORK,
+          response.status,
+          undefined,
+          error
+        );
+    }
+  }
+
+  // Handle JSON parsing errors
+  if (error instanceof SyntaxError) {
+    return new RakutenApiError(
+      'Invalid response format: Unable to parse API response',
+      RakutenApiErrorType.INVALID_RESPONSE,
+      undefined,
+      undefined,
+      error
+    );
+  }
+
+  // Handle configuration errors
+  if (error.message.includes('APIキーが設定されていません') || error.message.includes('API key')) {
+    return new RakutenApiError(
+      'Configuration error: Rakuten API key is not configured',
+      RakutenApiErrorType.CONFIGURATION,
+      undefined,
+      undefined,
+      error
+    );
+  }
+
+  // Default error
+  return new RakutenApiError(
+    `Unexpected error: ${error.message}`,
+    RakutenApiErrorType.NETWORK,
+    undefined,
+    undefined,
+    error
+  );
+}
+
+/**
+ * Log error with appropriate level based on error type
+ */
+function logApiError(error: RakutenApiError, context: string): void {
+  const logData = {
+    context,
+    type: error.type,
+    message: error.message,
+    statusCode: error.statusCode,
+    retryAfter: error.retryAfter
+  };
+
+  switch (error.type) {
+    case RakutenApiErrorType.CONFIGURATION:
+      console.warn(`[Rakuten API] Configuration issue in ${context}:`, logData);
+      break;
+    
+    case RakutenApiErrorType.AUTHENTICATION:
+      console.error(`[Rakuten API] Authentication error in ${context}:`, logData);
+      break;
+    
+    case RakutenApiErrorType.RATE_LIMIT:
+      console.warn(`[Rakuten API] Rate limit exceeded in ${context}:`, logData);
+      break;
+    
+    case RakutenApiErrorType.TIMEOUT:
+    case RakutenApiErrorType.NETWORK:
+      console.warn(`[Rakuten API] Network issue in ${context}:`, logData);
+      break;
+    
+    case RakutenApiErrorType.SERVICE_UNAVAILABLE:
+      console.error(`[Rakuten API] Service unavailable in ${context}:`, logData);
+      break;
+    
+    default:
+      console.error(`[Rakuten API] Unexpected error in ${context}:`, logData);
+  }
+}
+
+/**
+ * Determine if an error is retryable
+ */
+function isRetryableError(error: RakutenApiError): boolean {
+  return [
+    RakutenApiErrorType.RATE_LIMIT,
+    RakutenApiErrorType.TIMEOUT,
+    RakutenApiErrorType.NETWORK,
+    RakutenApiErrorType.SERVICE_UNAVAILABLE
+  ].includes(error.type);
+}
+
+/**
+ * Execute a function with retry logic
+ */
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  context: string,
+  retryConfig: RetryConfig = DEFAULT_RETRY_CONFIG
+): Promise<T> {
+  let lastError: RakutenApiError;
+
+  for (let attempt = 1; attempt <= retryConfig.maxAttempts; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
+      lastError = apiError;
+
+      logApiError(apiError, `${context} (attempt ${attempt}/${retryConfig.maxAttempts})`);
+
+      // Don't retry on non-retryable errors
+      if (!isRetryableError(apiError)) {
+        throw apiError;
+      }
+
+      // Don't retry on the last attempt
+      if (attempt === retryConfig.maxAttempts) {
+        break;
+      }
+
+      // Calculate delay for next attempt
+      let delay: number;
+      if (apiError.type === RakutenApiErrorType.RATE_LIMIT && apiError.retryAfter) {
+        // Use server-provided retry-after value
+        delay = apiError.retryAfter;
+        console.log(`[Rakuten API] Rate limited, waiting ${delay}ms as requested by server`);
+      } else {
+        // Use exponential backoff
+        delay = calculateBackoffDelay(attempt, retryConfig);
+        console.log(`[Rakuten API] Retrying in ${delay}ms (attempt ${attempt + 1}/${retryConfig.maxAttempts})`);
+      }
+
+      await sleep(delay);
+    }
+  }
+
+  throw lastError!;
+}
 
 /**
  * モックレシピデータ（楽天APIが利用できない場合のフォールバック）
@@ -75,68 +348,75 @@ function getMockRecipes(keyword: string): RakutenRecipe[] {
 }
 
 /**
- * 楽天レシピAPIのベースリクエスト関数
+ * 楽天レシピAPIのベースリクエスト関数（エラーハンドリング強化版）
  */
 async function makeRakutenRequest<T>(endpoint: string, params: Record<string, string | number> = {}): Promise<T> {
         if (!config.rakuten.applicationId) {
-                throw new Error('楽天APIキーが設定されていません');
+                throw new RakutenApiError(
+                        'Rakuten API key is not configured',
+                        RakutenApiErrorType.CONFIGURATION
+                );
         }
 
         // Check cached health status before making request
         const healthStatus = getCachedHealthStatus();
         if (healthStatus && !healthStatus.isHealthy) {
-                console.warn('Rakuten API is unhealthy, request may fail:', healthStatus.error);
+                console.warn('[Rakuten API] API is unhealthy, request may fail:', healthStatus.error);
         }
 
-        // レート制限の適用
-        await rateLimiter.waitIfNeeded();
+        return await withRetry(async () => {
+                // レート制限の適用
+                await rateLimiter.waitIfNeeded();
 
-        const searchParams = new URLSearchParams({
-                applicationId: config.rakuten.applicationId,
-                format: 'json',
-                ...Object.entries(params).reduce((acc, [key, value]) => {
-                        acc[key] = String(value);
-                        return acc;
-                }, {} as Record<string, string>)
-        });
-
-        const url = `${config.rakuten.baseUrl}${endpoint}?${searchParams.toString()}`;
-
-        try {
-                const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                                'Content-Type': 'application/json',
-                                'User-Agent': `${config.app.name}/${config.app.version}`,
-                        },
-                        // タイムアウト設定
-                        signal: AbortSignal.timeout(10000), // 10秒
+                const searchParams = new URLSearchParams({
+                        applicationId: config.rakuten.applicationId,
+                        format: 'json',
+                        ...Object.entries(params).reduce((acc, [key, value]) => {
+                                acc[key] = String(value);
+                                return acc;
+                        }, {} as Record<string, string>)
                 });
 
-                if (!response.ok) {
-                        // APIエラーの詳細ログ
-                        const errorText = await response.text();
-                        console.error(`楽天API エラー [${response.status}]:`, errorText);
-                        
-                        if (response.status === 429) {
-                                throw new Error('APIリクエスト制限に達しました。しばらく待ってから再試行してください。');
-                        } else if (response.status === 401) {
-                                throw new Error('APIキーが無効です。設定を確認してください。');
-                        } else {
-                                throw new Error(`楽天API エラー: ${response.status} ${response.statusText}`);
-                        }
+                const url = `${config.rakuten.baseUrl}${endpoint}?${searchParams.toString()}`;
+                let response: Response;
+
+                try {
+                        response = await fetch(url, {
+                                method: 'GET',
+                                headers: {
+                                        'Content-Type': 'application/json',
+                                        'User-Agent': `${config.app.name}/${config.app.version}`,
+                                },
+                                // タイムアウト設定
+                                signal: AbortSignal.timeout(10000), // 10秒
+                        });
+                } catch (error) {
+                        throw handleApiError(error);
                 }
 
-                const data = await response.json();
-                return data;
-        } catch (error) {
-                console.error('楽天API リクエストエラー:', error);
-                throw error;
-        }
+                if (!response.ok) {
+                        let errorText: string;
+                        try {
+                                errorText = await response.text();
+                        } catch {
+                                errorText = 'Unable to read error response';
+                        }
+
+                        console.error(`[Rakuten API] HTTP error [${response.status}]:`, errorText);
+                        throw handleApiError(new Error(errorText), response);
+                }
+
+                try {
+                        const data = await response.json();
+                        return data;
+                } catch (error) {
+                        throw handleApiError(error);
+                }
+        }, `makeRakutenRequest(${endpoint})`);
 }
 
 /**
- * レシピカテゴリ一覧を取得
+ * レシピカテゴリ一覧を取得（エラーハンドリング強化版）
  */
 export async function getRecipeCategories(): Promise<RakutenRecipeCategory[]> {
         try {
@@ -151,13 +431,23 @@ export async function getRecipeCategories(): Promise<RakutenRecipeCategory[]> {
 
                 return allCategories;
         } catch (error) {
-                console.error('レシピカテゴリ取得エラー:', error);
-                throw new Error('レシピカテゴリの取得に失敗しました');
+                const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
+                logApiError(apiError, 'getRecipeCategories');
+
+                // For category errors, we can't provide meaningful mock data
+                // so we re-throw with a user-friendly message
+                if (apiError.type === RakutenApiErrorType.CONFIGURATION) {
+                        throw new Error('Recipe categories are not available: API key not configured');
+                } else if (apiError.type === RakutenApiErrorType.AUTHENTICATION) {
+                        throw new Error('Recipe categories are not available: Invalid API key');
+                } else {
+                        throw new Error('Recipe categories are temporarily unavailable. Please try again later.');
+                }
         }
 }
 
 /**
- * キーワードでレシピを検索
+ * キーワードでレシピを検索（エラーハンドリング強化版）
  */
 export async function searchRecipes(keyword: string, options: {
         categoryId?: string;
@@ -166,7 +456,7 @@ export async function searchRecipes(keyword: string, options: {
 } = {}): Promise<RakutenRecipe[]> {
         try {
                 if (!config.rakuten.applicationId) {
-                        console.warn('楽天APIキーが設定されていないため、モックデータを返します');
+                        console.warn('[Rakuten API] API key not configured, using mock data for recipe search');
                         return getMockRecipes(keyword).slice(0, options.hits || 20);
                 }
 
@@ -183,36 +473,42 @@ export async function searchRecipes(keyword: string, options: {
                 const response = await makeRakutenRequest<RakutenRecipeSearchResponse>('/Recipe/CategoryRanking/20170426', params);
                 return response.result || [];
         } catch (error) {
-                console.error('レシピ検索エラー:', error);
-                // エラーの場合もモックデータを返す
+                const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
+                logApiError(apiError, 'searchRecipes');
+
+                // Graceful fallback to mock data for all error types
+                console.log(`[Rakuten API] Falling back to mock data for search: "${keyword}"`);
                 return getMockRecipes(keyword).slice(0, options.hits || 20);
         }
 }
 
 /**
- * 食材名からレシピを検索
+ * 食材名からレシピを検索（エラーハンドリング強化版）
  */
 export async function getRecipesByFoodName(foodName: string, limit: number = 10): Promise<RakutenRecipe[]> {
         try {
                 if (config.features.useMockRecipes) {
-                        console.warn('楽天APIキーが設定されていないため、モックデータを返します');
+                        console.warn('[Rakuten API] Mock recipes enabled, using mock data for food search');
                         return getMockRecipes(foodName).slice(0, limit);
                 }
                 return await searchRecipes(foodName, { hits: limit });
         } catch (error) {
-                console.error('食材レシピ取得エラー:', error);
-                // エラーの場合もモックデータを返す
+                const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
+                logApiError(apiError, 'getRecipesByFoodName');
+
+                // Graceful fallback to mock data for all error types
+                console.log(`[Rakuten API] Falling back to mock data for food search: "${foodName}"`);
                 return getMockRecipes(foodName).slice(0, limit);
         }
 }
 
 /**
- * カテゴリ別レシピランキングを取得
+ * カテゴリ別レシピランキングを取得（エラーハンドリング強化版）
  */
 export async function getRecipeRanking(categoryId?: string, page: number = 1): Promise<RakutenRecipe[]> {
         try {
                 if (!config.rakuten.applicationId) {
-                        console.warn('楽天APIキーが設定されていないため、モックデータを返します');
+                        console.warn('[Rakuten API] API key not configured, using mock data for recipe ranking');
                         return getMockRecipes('人気レシピ');
                 }
 
@@ -228,14 +524,17 @@ export async function getRecipeRanking(categoryId?: string, page: number = 1): P
                 const response = await makeRakutenRequest<RakutenRecipeSearchResponse>('/Recipe/CategoryRanking/20170426', params);
                 return response.result || [];
         } catch (error) {
-                console.error('レシピランキング取得エラー:', error);
-                // エラーの場合もモックデータを返す
+                const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
+                logApiError(apiError, 'getRecipeRanking');
+
+                // Graceful fallback to mock data for all error types
+                console.log('[Rakuten API] Falling back to mock data for recipe ranking');
                 return getMockRecipes('人気レシピ');
         }
 }
 
 /**
- * レシピIDから詳細情報を取得（楽天レシピAPIには詳細取得APIがないため、検索結果から取得）
+ * レシピIDから詳細情報を取得（エラーハンドリング強化版）
  */
 export async function getRecipeById(recipeId: number): Promise<RakutenRecipe | null> {
         try {
@@ -244,7 +543,17 @@ export async function getRecipeById(recipeId: number): Promise<RakutenRecipe | n
                 const recipes = await getRecipeRanking();
                 return recipes.find(recipe => recipe.recipeId === recipeId) || null;
         } catch (error) {
-                console.error('レシピ詳細取得エラー:', error);
-                throw new Error('レシピ詳細の取得に失敗しました');
+                const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
+                logApiError(apiError, 'getRecipeById');
+
+                // For recipe detail errors, we can try to return a mock recipe with the requested ID
+                console.log(`[Rakuten API] Falling back to mock data for recipe ID: ${recipeId}`);
+                const mockRecipes = getMockRecipes('詳細レシピ');
+                const mockRecipe = mockRecipes[0];
+                if (mockRecipe) {
+                        // Update the mock recipe with the requested ID
+                        return { ...mockRecipe, recipeId };
+                }
+                return null;
         }
 }
