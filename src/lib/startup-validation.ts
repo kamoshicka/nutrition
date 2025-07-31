@@ -9,6 +9,11 @@
 import { config, validateConfig, generateConfigReport, getEnvironmentSpecificConfig } from './config';
 import { environmentSetup, validateEnvironmentSpecificConfig } from './environment-setup';
 import { logger } from '../../lib/logger';
+import { 
+  logApiKeyValidation, 
+  logStartupSummary,
+  type ApiKeyValidationLogEntry 
+} from './rakuten-api-logger';
 
 export interface StartupValidationResult {
   isValid: boolean;
@@ -130,6 +135,16 @@ export class StartupValidator {
       // Log validation results
       await this.logValidationResults(result, Date.now() - startTime);
 
+      // Log startup summary using Rakuten API logger
+      logStartupSummary({
+        hasApiKey: result.configurationStatus.rakutenApi.configured,
+        isValidApiKey: result.configurationStatus.rakutenApi.valid,
+        useMockData: result.configurationStatus.rakutenApi.usingMockData,
+        environment: this.environment,
+        healthChecksEnabled: config.rakuten.monitoring.enableHealthChecks,
+        logLevel: config.rakuten.monitoring.logLevel,
+      });
+
       // Handle validation failure
       if (!result.canStart && this.options.exitOnError) {
         await this.handleValidationFailure(result);
@@ -203,6 +218,17 @@ export class StartupValidator {
         apiKeyLength: envApiKey?.length || 0,
         type: 'rakuten_env_read'
       });
+
+      // Log startup API key validation using structured logging
+      const startupLogEntry: ApiKeyValidationLogEntry = {
+        validationType: 'startup',
+        isValid: apiStatus.valid,
+        hasApiKey: apiStatus.configured,
+        environment: this.environment,
+        error: !apiStatus.configured ? 'API key not configured' : 
+               !apiStatus.valid ? 'API key format invalid' : undefined,
+      };
+      logApiKeyValidation(startupLogEntry);
 
       if (!apiStatus.configured) {
         // Requirement 1.3: WHEN the RAKUTEN_APPLICATION_ID is missing or empty THEN the system SHALL fall back to mock recipe data

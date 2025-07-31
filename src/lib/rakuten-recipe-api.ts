@@ -1,6 +1,13 @@
 import { RakutenRecipe, RakutenRecipeCategory, RakutenRecipeSearchResponse, RakutenRecipeCategoryResponse } from '@/types';
 import { config } from './config';
 import { getCachedHealthStatus } from './rakuten-health-monitor';
+import { 
+  rakutenApiLogger, 
+  logApiRequest, 
+  logDataSourceUsage, 
+  createTimer,
+  type ApiRequestLogEntry 
+} from './rakuten-api-logger';
 
 // Error types for better error handling
 export enum RakutenApiErrorType {
@@ -209,42 +216,21 @@ function handleApiError(error: any, response?: Response): RakutenApiError {
 }
 
 /**
- * Log error with appropriate level based on error type
+ * Log error with appropriate level based on error type using structured logging
  */
-function logApiError(error: RakutenApiError, context: string): void {
-  const logData = {
-    context,
-    type: error.type,
-    message: error.message,
+function logApiError(error: RakutenApiError, context: string, endpoint?: string, method: string = 'GET'): void {
+  const logEntry: ApiRequestLogEntry = {
+    endpoint: endpoint || context,
+    method,
+    dataSource: 'real_api',
+    success: false,
     statusCode: error.statusCode,
-    retryAfter: error.retryAfter
+    responseTime: 0, // Will be set by caller if available
+    error: error.message,
+    fallbackReason: `${error.type}: ${error.message}`,
   };
 
-  switch (error.type) {
-    case RakutenApiErrorType.CONFIGURATION:
-      console.warn(`[Rakuten API] Configuration issue in ${context}:`, logData);
-      break;
-    
-    case RakutenApiErrorType.AUTHENTICATION:
-      console.error(`[Rakuten API] Authentication error in ${context}:`, logData);
-      break;
-    
-    case RakutenApiErrorType.RATE_LIMIT:
-      console.warn(`[Rakuten API] Rate limit exceeded in ${context}:`, logData);
-      break;
-    
-    case RakutenApiErrorType.TIMEOUT:
-    case RakutenApiErrorType.NETWORK:
-      console.warn(`[Rakuten API] Network issue in ${context}:`, logData);
-      break;
-    
-    case RakutenApiErrorType.SERVICE_UNAVAILABLE:
-      console.error(`[Rakuten API] Service unavailable in ${context}:`, logData);
-      break;
-    
-    default:
-      console.error(`[Rakuten API] Unexpected error in ${context}:`, logData);
-  }
+  logApiRequest(logEntry);
 }
 
 /**
@@ -351,7 +337,10 @@ function getMockRecipes(keyword: string): RakutenRecipe[] {
  * 楽天レシピAPIのベースリクエスト関数（エラーハンドリング強化版）
  */
 async function makeRakutenRequest<T>(endpoint: string, params: Record<string, string | number> = {}): Promise<T> {
+        const timer = createTimer();
+        
         if (!config.rakuten.applicationId) {
+                logDataSourceUsage('makeRakutenRequest', 'mock_data', 'API key not configured');
                 throw new RakutenApiError(
                         'Rakuten API key is not configured',
                         RakutenApiErrorType.CONFIGURATION
@@ -361,7 +350,7 @@ async function makeRakutenRequest<T>(endpoint: string, params: Record<string, st
         // Check cached health status before making request
         const healthStatus = getCachedHealthStatus();
         if (healthStatus && !healthStatus.isHealthy) {
-                console.warn('[Rakuten API] API is unhealthy, request may fail:', healthStatus.error);
+                logDataSourceUsage('makeRakutenRequest', 'mock_data', `API unhealthy: ${healthStatus.error}`);
         }
 
         return await withRetry(async () => {
@@ -388,11 +377,15 @@ async function makeRakutenRequest<T>(endpoint: string, params: Record<string, st
                                         'User-Agent': `${config.app.name}/${config.app.version}`,
                                 },
                                 // タイムアウト設定
-                                signal: AbortSignal.timeout(10000), // 10秒
+                                signal: AbortSignal.timeout(config.rakuten.timeout), 
                         });
                 } catch (error) {
+                        const duration = timer.end();
+                        logApiError(handleApiError(error), 'makeRakutenRequest', endpoint, 'GET');
                         throw handleApiError(error);
                 }
+
+                const duration = timer.end();
 
                 if (!response.ok) {
                         let errorText: string;
@@ -402,15 +395,32 @@ async function makeRakutenRequest<T>(endpoint: string, params: Record<string, st
                                 errorText = 'Unable to read error response';
                         }
 
-                        console.error(`[Rakuten API] HTTP error [${response.status}]:`, errorText);
-                        throw handleApiError(new Error(errorText), response);
+                        const apiError = handleApiError(new Error(errorText), response);
+                        logApiError(apiError, 'makeRakutenRequest', endpoint, 'GET');
+                        throw apiError;
                 }
 
                 try {
                         const data = await response.json();
+                        
+                        // Log successful request
+                        const logEntry: ApiRequestLogEntry = {
+                                endpoint,
+                                method: 'GET',
+                                dataSource: 'real_api',
+                                success: true,
+                                statusCode: response.status,
+                                responseTime: duration,
+                                rateLimitRemaining: response.headers.get('x-ratelimit-remaining') ? 
+                                        parseInt(response.headers.get('x-ratelimit-remaining')!, 10) : undefined,
+                        };
+                        logApiRequest(logEntry);
+                        
                         return data;
                 } catch (error) {
-                        throw handleApiError(error);
+                        const apiError = handleApiError(error);
+                        logApiError(apiError, 'makeRakutenRequest', endpoint, 'GET');
+                        throw apiError;
                 }
         }, `makeRakutenRequest(${endpoint})`);
 }
@@ -419,7 +429,10 @@ async function makeRakutenRequest<T>(endpoint: string, params: Record<string, st
  * レシピカテゴリ一覧を取得（エラーハンドリング強化版）
  */
 export async function getRecipeCategories(): Promise<RakutenRecipeCategory[]> {
+        const timer = createTimer();
+        
         try {
+                logDataSourceUsage('getRecipeCategories', 'real_api', 'Fetching from Rakuten API');
                 const response = await makeRakutenRequest<RakutenRecipeCategoryResponse>('/Recipe/CategoryList/20170426');
 
                 // 大カテゴリ、中カテゴリ、小カテゴリを統合
@@ -431,8 +444,20 @@ export async function getRecipeCategories(): Promise<RakutenRecipeCategory[]> {
 
                 return allCategories;
         } catch (error) {
+                const duration = timer.end();
                 const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
-                logApiError(apiError, 'getRecipeCategories');
+                
+                // Log the failed request
+                const logEntry: ApiRequestLogEntry = {
+                        endpoint: '/Recipe/CategoryList/20170426',
+                        method: 'GET',
+                        dataSource: 'real_api',
+                        success: false,
+                        responseTime: duration,
+                        error: apiError.message,
+                        fallbackReason: `${apiError.type}: Cannot provide mock categories`,
+                };
+                logApiRequest(logEntry);
 
                 // For category errors, we can't provide meaningful mock data
                 // so we re-throw with a user-friendly message
@@ -454,10 +479,25 @@ export async function searchRecipes(keyword: string, options: {
         page?: number;
         hits?: number;
 } = {}): Promise<RakutenRecipe[]> {
+        const timer = createTimer();
+        
         try {
                 if (!config.rakuten.applicationId) {
-                        console.warn('[Rakuten API] API key not configured, using mock data for recipe search');
-                        return getMockRecipes(keyword).slice(0, options.hits || 20);
+                        logDataSourceUsage('searchRecipes', 'mock_data', 'API key not configured');
+                        const mockData = getMockRecipes(keyword).slice(0, options.hits || 20);
+                        
+                        // Log mock data usage
+                        const logEntry: ApiRequestLogEntry = {
+                                endpoint: '/Recipe/CategoryRanking/20170426',
+                                method: 'GET',
+                                dataSource: 'mock_data',
+                                success: true,
+                                responseTime: timer.end(),
+                                fallbackReason: 'API key not configured',
+                        };
+                        logApiRequest(logEntry);
+                        
+                        return mockData;
                 }
 
                 const params: Record<string, string | number> = {
@@ -470,15 +510,41 @@ export async function searchRecipes(keyword: string, options: {
                         params.categoryId = options.categoryId;
                 }
 
+                logDataSourceUsage('searchRecipes', 'real_api', `Searching for "${keyword}"`);
                 const response = await makeRakutenRequest<RakutenRecipeSearchResponse>('/Recipe/CategoryRanking/20170426', params);
                 return response.result || [];
         } catch (error) {
+                const duration = timer.end();
                 const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
-                logApiError(apiError, 'searchRecipes');
+                
+                // Log the failed request before fallback
+                const logEntry: ApiRequestLogEntry = {
+                        endpoint: '/Recipe/CategoryRanking/20170426',
+                        method: 'GET',
+                        dataSource: 'real_api',
+                        success: false,
+                        responseTime: duration,
+                        error: apiError.message,
+                        fallbackReason: `${apiError.type}: Falling back to mock data`,
+                };
+                logApiRequest(logEntry);
 
                 // Graceful fallback to mock data for all error types
-                console.log(`[Rakuten API] Falling back to mock data for search: "${keyword}"`);
-                return getMockRecipes(keyword).slice(0, options.hits || 20);
+                logDataSourceUsage('searchRecipes', 'mock_data', `Fallback after API error: ${apiError.type}`);
+                const mockData = getMockRecipes(keyword).slice(0, options.hits || 20);
+                
+                // Log successful mock data usage
+                const mockLogEntry: ApiRequestLogEntry = {
+                        endpoint: '/Recipe/CategoryRanking/20170426',
+                        method: 'GET',
+                        dataSource: 'mock_data',
+                        success: true,
+                        responseTime: timer.end() - duration, // Time for mock data generation
+                        fallbackReason: `API error: ${apiError.type}`,
+                };
+                logApiRequest(mockLogEntry);
+                
+                return mockData;
         }
 }
 
@@ -486,19 +552,61 @@ export async function searchRecipes(keyword: string, options: {
  * 食材名からレシピを検索（エラーハンドリング強化版）
  */
 export async function getRecipesByFoodName(foodName: string, limit: number = 10): Promise<RakutenRecipe[]> {
+        const timer = createTimer();
+        
         try {
                 if (config.features.useMockRecipes) {
-                        console.warn('[Rakuten API] Mock recipes enabled, using mock data for food search');
-                        return getMockRecipes(foodName).slice(0, limit);
+                        logDataSourceUsage('getRecipesByFoodName', 'mock_data', 'Mock recipes enabled in config');
+                        const mockData = getMockRecipes(foodName).slice(0, limit);
+                        
+                        // Log mock data usage
+                        const logEntry: ApiRequestLogEntry = {
+                                endpoint: 'getRecipesByFoodName',
+                                method: 'GET',
+                                dataSource: 'mock_data',
+                                success: true,
+                                responseTime: timer.end(),
+                                fallbackReason: 'Mock recipes enabled in configuration',
+                        };
+                        logApiRequest(logEntry);
+                        
+                        return mockData;
                 }
+                
+                logDataSourceUsage('getRecipesByFoodName', 'real_api', `Searching recipes for food: "${foodName}"`);
                 return await searchRecipes(foodName, { hits: limit });
         } catch (error) {
+                const duration = timer.end();
                 const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
-                logApiError(apiError, 'getRecipesByFoodName');
+                
+                // Log the failed request
+                const logEntry: ApiRequestLogEntry = {
+                        endpoint: 'getRecipesByFoodName',
+                        method: 'GET',
+                        dataSource: 'real_api',
+                        success: false,
+                        responseTime: duration,
+                        error: apiError.message,
+                        fallbackReason: `${apiError.type}: Falling back to mock data`,
+                };
+                logApiRequest(logEntry);
 
                 // Graceful fallback to mock data for all error types
-                console.log(`[Rakuten API] Falling back to mock data for food search: "${foodName}"`);
-                return getMockRecipes(foodName).slice(0, limit);
+                logDataSourceUsage('getRecipesByFoodName', 'mock_data', `Fallback after error: ${apiError.type}`);
+                const mockData = getMockRecipes(foodName).slice(0, limit);
+                
+                // Log successful mock data usage
+                const mockLogEntry: ApiRequestLogEntry = {
+                        endpoint: 'getRecipesByFoodName',
+                        method: 'GET',
+                        dataSource: 'mock_data',
+                        success: true,
+                        responseTime: timer.end() - duration,
+                        fallbackReason: `API error: ${apiError.type}`,
+                };
+                logApiRequest(mockLogEntry);
+                
+                return mockData;
         }
 }
 
@@ -506,10 +614,25 @@ export async function getRecipesByFoodName(foodName: string, limit: number = 10)
  * カテゴリ別レシピランキングを取得（エラーハンドリング強化版）
  */
 export async function getRecipeRanking(categoryId?: string, page: number = 1): Promise<RakutenRecipe[]> {
+        const timer = createTimer();
+        
         try {
                 if (!config.rakuten.applicationId) {
-                        console.warn('[Rakuten API] API key not configured, using mock data for recipe ranking');
-                        return getMockRecipes('人気レシピ');
+                        logDataSourceUsage('getRecipeRanking', 'mock_data', 'API key not configured');
+                        const mockData = getMockRecipes('人気レシピ');
+                        
+                        // Log mock data usage
+                        const logEntry: ApiRequestLogEntry = {
+                                endpoint: '/Recipe/CategoryRanking/20170426',
+                                method: 'GET',
+                                dataSource: 'mock_data',
+                                success: true,
+                                responseTime: timer.end(),
+                                fallbackReason: 'API key not configured',
+                        };
+                        logApiRequest(logEntry);
+                        
+                        return mockData;
                 }
 
                 const params: Record<string, string | number> = {
@@ -521,15 +644,41 @@ export async function getRecipeRanking(categoryId?: string, page: number = 1): P
                         params.categoryId = categoryId;
                 }
 
+                logDataSourceUsage('getRecipeRanking', 'real_api', `Fetching ranking${categoryId ? ` for category ${categoryId}` : ''}`);
                 const response = await makeRakutenRequest<RakutenRecipeSearchResponse>('/Recipe/CategoryRanking/20170426', params);
                 return response.result || [];
         } catch (error) {
+                const duration = timer.end();
                 const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
-                logApiError(apiError, 'getRecipeRanking');
+                
+                // Log the failed request
+                const logEntry: ApiRequestLogEntry = {
+                        endpoint: '/Recipe/CategoryRanking/20170426',
+                        method: 'GET',
+                        dataSource: 'real_api',
+                        success: false,
+                        responseTime: duration,
+                        error: apiError.message,
+                        fallbackReason: `${apiError.type}: Falling back to mock data`,
+                };
+                logApiRequest(logEntry);
 
                 // Graceful fallback to mock data for all error types
-                console.log('[Rakuten API] Falling back to mock data for recipe ranking');
-                return getMockRecipes('人気レシピ');
+                logDataSourceUsage('getRecipeRanking', 'mock_data', `Fallback after API error: ${apiError.type}`);
+                const mockData = getMockRecipes('人気レシピ');
+                
+                // Log successful mock data usage
+                const mockLogEntry: ApiRequestLogEntry = {
+                        endpoint: '/Recipe/CategoryRanking/20170426',
+                        method: 'GET',
+                        dataSource: 'mock_data',
+                        success: true,
+                        responseTime: timer.end() - duration,
+                        fallbackReason: `API error: ${apiError.type}`,
+                };
+                logApiRequest(mockLogEntry);
+                
+                return mockData;
         }
 }
 
@@ -537,23 +686,65 @@ export async function getRecipeRanking(categoryId?: string, page: number = 1): P
  * レシピIDから詳細情報を取得（エラーハンドリング強化版）
  */
 export async function getRecipeById(recipeId: number): Promise<RakutenRecipe | null> {
+        const timer = createTimer();
+        
         try {
                 // 楽天レシピAPIには個別のレシピ詳細取得APIがないため、
                 // レシピIDを使って検索を行う（実際の実装では制限があります）
+                logDataSourceUsage('getRecipeById', 'real_api', `Fetching recipe details for ID: ${recipeId}`);
                 const recipes = await getRecipeRanking();
                 return recipes.find(recipe => recipe.recipeId === recipeId) || null;
         } catch (error) {
+                const duration = timer.end();
                 const apiError = error instanceof RakutenApiError ? error : handleApiError(error);
-                logApiError(apiError, 'getRecipeById');
+                
+                // Log the failed request
+                const logEntry: ApiRequestLogEntry = {
+                        endpoint: 'getRecipeById',
+                        method: 'GET',
+                        dataSource: 'real_api',
+                        success: false,
+                        responseTime: duration,
+                        error: apiError.message,
+                        fallbackReason: `${apiError.type}: Falling back to mock data`,
+                };
+                logApiRequest(logEntry);
 
                 // For recipe detail errors, we can try to return a mock recipe with the requested ID
-                console.log(`[Rakuten API] Falling back to mock data for recipe ID: ${recipeId}`);
+                logDataSourceUsage('getRecipeById', 'mock_data', `Fallback for recipe ID: ${recipeId}`);
                 const mockRecipes = getMockRecipes('詳細レシピ');
                 const mockRecipe = mockRecipes[0];
+                
                 if (mockRecipe) {
                         // Update the mock recipe with the requested ID
-                        return { ...mockRecipe, recipeId };
+                        const result = { ...mockRecipe, recipeId };
+                        
+                        // Log successful mock data usage
+                        const mockLogEntry: ApiRequestLogEntry = {
+                                endpoint: 'getRecipeById',
+                                method: 'GET',
+                                dataSource: 'mock_data',
+                                success: true,
+                                responseTime: timer.end() - duration,
+                                fallbackReason: `API error: ${apiError.type}`,
+                        };
+                        logApiRequest(mockLogEntry);
+                        
+                        return result;
                 }
+                
+                // Log when no mock data is available
+                const noDataLogEntry: ApiRequestLogEntry = {
+                        endpoint: 'getRecipeById',
+                        method: 'GET',
+                        dataSource: 'mock_data',
+                        success: false,
+                        responseTime: timer.end() - duration,
+                        error: 'No mock data available for recipe',
+                        fallbackReason: `API error: ${apiError.type}`,
+                };
+                logApiRequest(noDataLogEntry);
+                
                 return null;
         }
 }

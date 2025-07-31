@@ -8,6 +8,11 @@
  */
 
 import { config } from './config';
+import { 
+  logApiKeyValidation, 
+  createTimer,
+  type ApiKeyValidationLogEntry 
+} from './rakuten-api-logger';
 
 // Validation result interfaces
 export interface ApiKeyValidationResult {
@@ -57,13 +62,26 @@ export class ApiKeyValidator {
    * @returns boolean indicating if the format is valid
    */
   validateFormat(apiKey: string): boolean {
-    if (!apiKey || typeof apiKey !== 'string') {
-      return false;
-    }
-
+    const timer = createTimer();
+    const hasApiKey = !!(apiKey && typeof apiKey === 'string');
+    
     // Rakuten API keys are typically 20 characters of alphanumeric characters
     // We don't trim here to ensure exact format validation
-    return this.RAKUTEN_API_KEY_PATTERN.test(apiKey);
+    const isValid = hasApiKey && this.RAKUTEN_API_KEY_PATTERN.test(apiKey);
+    
+    // Log the validation attempt
+    const logEntry: ApiKeyValidationLogEntry = {
+      validationType: 'format',
+      isValid,
+      hasApiKey,
+      environment: config.app.environment,
+      responseTime: timer.end(),
+      error: !isValid ? (hasApiKey ? 'Invalid API key format' : 'API key not provided') : undefined,
+    };
+    
+    logApiKeyValidation(logEntry);
+    
+    return isValid;
   }
 
   /**
@@ -72,16 +90,30 @@ export class ApiKeyValidator {
    * @returns Promise<ConnectionTestResult> with connection test results
    */
   async testConnection(apiKey: string): Promise<ConnectionTestResult> {
-    const startTime = Date.now();
+    const timer = createTimer();
+    const hasApiKey = !!(apiKey && typeof apiKey === 'string');
 
     try {
-      // Validate format first
+      // Validate format first (this will also log the format validation)
       if (!this.validateFormat(apiKey)) {
-        return {
+        const result = {
           success: false,
-          responseTime: 0,
+          responseTime: timer.end(),
           error: 'Invalid API key format. Expected 20 alphanumeric characters.',
         };
+        
+        // Log the connection test failure
+        const logEntry: ApiKeyValidationLogEntry = {
+          validationType: 'connection',
+          isValid: false,
+          hasApiKey,
+          environment: config.app.environment,
+          responseTime: result.responseTime,
+          error: result.error,
+        };
+        logApiKeyValidation(logEntry);
+        
+        return result;
       }
 
       // Prepare test request
@@ -106,18 +138,30 @@ export class ApiKeyValidator {
       });
 
       clearTimeout(timeoutId);
-      const responseTime = Date.now() - startTime;
+      const responseTime = timer.end();
 
       // Handle different response statuses
       if (response.ok) {
         // Try to parse the response to ensure it's valid
         const data = await response.json();
         
-        return {
+        const result = {
           success: true,
           responseTime,
           rateLimitInfo: this.extractRateLimitInfo(response),
         };
+        
+        // Log successful connection test
+        const logEntry: ApiKeyValidationLogEntry = {
+          validationType: 'connection',
+          isValid: true,
+          hasApiKey: true,
+          environment: config.app.environment,
+          responseTime,
+        };
+        logApiKeyValidation(logEntry);
+        
+        return result;
       } else {
         let errorMessage = `API request failed with status ${response.status}`;
         
@@ -139,38 +183,57 @@ export class ApiKeyValidator {
             break;
         }
 
-        return {
+        const result = {
           success: false,
           responseTime,
           error: errorMessage,
           statusCode: response.status,
           rateLimitInfo: this.extractRateLimitInfo(response),
         };
+        
+        // Log failed connection test
+        const logEntry: ApiKeyValidationLogEntry = {
+          validationType: 'connection',
+          isValid: false,
+          hasApiKey: true,
+          environment: config.app.environment,
+          responseTime,
+          error: errorMessage,
+        };
+        logApiKeyValidation(logEntry);
+        
+        return result;
       }
     } catch (error) {
-      const responseTime = Date.now() - startTime;
+      const responseTime = timer.end();
+      let errorMessage = 'Unknown error occurred during connection test.';
       
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          return {
-            success: false,
-            responseTime,
-            error: `Connection timeout after ${this.CONNECTION_TIMEOUT}ms. Please check your network connection.`,
-          };
+          errorMessage = `Connection timeout after ${this.CONNECTION_TIMEOUT}ms. Please check your network connection.`;
+        } else {
+          errorMessage = `Network error: ${error.message}`;
         }
-        
-        return {
-          success: false,
-          responseTime,
-          error: `Network error: ${error.message}`,
-        };
       }
 
-      return {
+      const result = {
         success: false,
         responseTime,
-        error: 'Unknown error occurred during connection test.',
+        error: errorMessage,
       };
+      
+      // Log connection test error
+      const logEntry: ApiKeyValidationLogEntry = {
+        validationType: 'connection',
+        isValid: false,
+        hasApiKey,
+        environment: config.app.environment,
+        responseTime,
+        error: errorMessage,
+      };
+      logApiKeyValidation(logEntry);
+      
+      return result;
     }
   }
 
