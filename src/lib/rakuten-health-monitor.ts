@@ -359,7 +359,7 @@ class RakutenHealthMonitor implements ApiHealthMonitor {
         console.error(message, details);
       }
     } else {
-      if (logLevel === 'info' || logLevel === 'debug') {
+      if (logLevel === 'info') {
         console.info(message, details);
       } else if (logLevel === 'debug') {
         console.debug(message, details);

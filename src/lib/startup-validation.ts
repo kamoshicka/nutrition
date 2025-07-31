@@ -323,10 +323,10 @@ export class StartupValidator {
         result.recommendations.push('Set DATABASE_URL environment variable');
       } else {
         // Basic database URL validation
-        if (databaseUrl.startsWith('./') || databaseUrl.startsWith('/')) {
+        if (databaseUrl && (databaseUrl.startsWith('./') || databaseUrl.startsWith('/'))) {
           // SQLite file path
           dbStatus.accessible = true; // We'll assume file-based DB is accessible
-        } else {
+        } else if (databaseUrl) {
           // URL-based database
           try {
             new URL(databaseUrl);
@@ -335,6 +335,8 @@ export class StartupValidator {
             result.errors.push('Database URL format is invalid');
             dbStatus.accessible = false;
           }
+        } else {
+          dbStatus.accessible = false;
         }
       }
 
@@ -365,7 +367,7 @@ export class StartupValidator {
       const nextAuthUrl = process.env.NEXTAUTH_URL;
 
       authStatus.configured = !!nextAuthSecret;
-      authStatus.valid = authStatus.configured && nextAuthSecret.length >= 32;
+      authStatus.valid = !!(authStatus.configured && nextAuthSecret && nextAuthSecret.length >= 32);
 
       if (!authStatus.configured) {
         result.errors.push('NextAuth secret is not configured');
@@ -478,8 +480,8 @@ export class StartupValidator {
       if (result.configurationStatus.rakutenApi.configured && result.configurationStatus.rakutenApi.valid) {
         try {
           // Import and use the health monitor
-          const { checkApiHealth } = await import('./rakuten-health-monitor');
-          const healthStatus = await checkApiHealth();
+          const { getCurrentHealthStatus } = await import('./rakuten-health-monitor');
+          const healthStatus = await getCurrentHealthStatus();
           
           if (!healthStatus.isHealthy) {
             result.warnings.push('Rakuten API health check failed');
@@ -501,16 +503,18 @@ export class StartupValidator {
           result.warnings.push('Could not perform Rakuten API health check');
           logger.warn('Rakuten API health check exception', {
             environment: this.environment,
-            type: 'rakuten_health_check_error'
-          }, error as Error);
+            type: 'rakuten_health_check_error',
+            error: (error as Error).message
+          });
         }
       }
 
     } catch (error) {
       logger.warn('Connection validation failed', {
         environment: this.environment,
-        type: 'connection_validation_error'
-      }, error as Error);
+        type: 'connection_validation_error',
+        error: (error as Error).message
+      });
     }
   }
 

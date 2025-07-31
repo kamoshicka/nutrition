@@ -358,7 +358,7 @@ async function makeRakutenRequest<T>(endpoint: string, params: Record<string, st
                 await rateLimiter.waitIfNeeded();
 
                 const searchParams = new URLSearchParams({
-                        applicationId: config.rakuten.applicationId,
+                        applicationId: config.rakuten.applicationId || '',
                         format: 'json',
                         ...Object.entries(params).reduce((acc, [key, value]) => {
                                 acc[key] = String(value);
