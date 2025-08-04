@@ -197,8 +197,8 @@ const nextConfig = {
     optimizeCss: false,
   },
   
-  // Output configuration for deployment (disable for now to use npm start)
-  // output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+  // Output configuration for deployment
+  output: process.env.VERCEL ? undefined : 'standalone',
   
   // Disable source maps in production for security
   productionBrowserSourceMaps: false,

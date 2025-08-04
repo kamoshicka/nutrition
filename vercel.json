@@ -1,11 +1,16 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
+  "version": 2,
+  "name": "cookcare",
+  "alias": ["cookcare.vercel.app"],
+  "regions": ["nrt1"],
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
   "functions": {
-    "app/api/**/*.ts": {
-      "maxDuration": 10
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
     }
   },
   "headers": [
@@ -14,8 +19,13 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=300, stale-while-revalidate=600"
-        },
+          "value": "s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
@@ -23,14 +33,18 @@
         {
           "key": "X-Frame-Options",
           "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
         }
       ]
     }
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
     }
   ]
 }
