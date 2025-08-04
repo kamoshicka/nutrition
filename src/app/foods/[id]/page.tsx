@@ -9,6 +9,8 @@ import ApiErrorFallback from '@/components/ui/ApiErrorFallback';
 import CookingMethodList from '@/components/ui/CookingMethodList';
 import FoodDetailSkeleton from '@/components/ui/skeletons/FoodDetailSkeleton';
 import RecipeList from '@/components/ui/RecipeList';
+import AdSenseAd from '@/components/ui/AdSenseAd';
+import { AffiliateProducts } from '@/components/ui/AffiliateProducts';
 
 // Wrapper component with error boundary
 export default function FoodDetailPageWrapper() {
@@ -102,6 +104,17 @@ function FoodDetailPage() {
 
   return (
     <div className="space-y-8">
+      {/* Header Ad */}
+      <AdSenseAd 
+        placement="header" 
+        className="w-full"
+        fallback={
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-gray-500">広告スペース</p>
+          </div>
+        }
+      />
+      
       {/* 戻るリンク */}
       <div className="mb-4">
         <Link href="/" className="text-blue-600 hover:text-blue-800 flex items-center">
@@ -212,6 +225,25 @@ function FoodDetailPage() {
         )}
       </div>
 
+      {/* Content Ad */}
+      <AdSenseAd 
+        placement="content" 
+        className="w-full"
+        fallback={
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-blue-600">コンテンツ広告</p>
+          </div>
+        }
+      />
+
+      {/* Affiliate Products */}
+      <AffiliateProducts 
+        foodName={food.name}
+        foodCategory=""
+        showDisclosure={true}
+        className="bg-white shadow rounded-lg p-6"
+      />
+
       {/* レシピ */}
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">おすすめレシピ</h2>
@@ -220,6 +252,17 @@ function FoodDetailPage() {
         </p>
         <RecipeList foodId={foodId} foodName={food.name} />
       </div>
+
+      {/* Footer Ad */}
+      <AdSenseAd 
+        placement="footer" 
+        className="w-full"
+        fallback={
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-gray-500">フッター広告スペース</p>
+          </div>
+        }
+      />
     </div>
   );
 }

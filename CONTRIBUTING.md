@@ -13,8 +13,8 @@
 1. リポジトリをフォーク
 2. ローカルにクローン
    ```bash
-   git clone https://github.com/your-username/healthcare-food-app.git
-   cd healthcare-food-app
+   git clone https://github.com/your-username/cookcare.git
+   cd cookcare
    ```
 3. 依存関係をインストール
    ```bash

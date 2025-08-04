@@ -7,6 +7,7 @@ import CategoryCard from '@/components/ui/CategoryCard';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import ApiErrorFallback from '@/components/ui/ApiErrorFallback';
 import CategoryCardSkeleton from '@/components/ui/skeletons/CategoryCardSkeleton';
+import AdSenseAd from '@/components/ui/AdSenseAd';
 
 // Wrapper component with error boundary
 export default function HomePageWrapper() {
@@ -111,12 +112,23 @@ function HomePage() {
 
   return (
     <div className="space-y-8">
+      {/* Header Ad */}
+      <AdSenseAd 
+        placement="header" 
+        className="w-full"
+        fallback={
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-gray-500">広告スペース</p>
+          </div>
+        }
+      />
+      
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          病気・症状別食材検索
+          クックケア - 健康食材検索
         </h2>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          健康状態や特定の症状にフォーカスをあてて、<br></br>効果的な食材と調理方法を見つけることができます。
+          病気・症状に効果的な食材と調理法を見つけて、<br></br>健康的な食生活をサポートします。
         </p>
       </div>
       
@@ -140,11 +152,42 @@ function HomePage() {
             <p className="text-gray-500">検索条件に一致するカテゴリがありません</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCategories.map(category => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCategories.map((category, index) => (
+                <div key={category.id}>
+                  <CategoryCard category={category} />
+                  {/* Insert ad after every 6 categories */}
+                  {(index + 1) % 6 === 0 && (
+                    <div className="mt-6 mb-6">
+                      <AdSenseAd 
+                        placement="content" 
+                        className="w-full"
+                        fallback={
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                            <p className="text-sm text-blue-600">コンテンツ広告</p>
+                          </div>
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            {/* Footer Ad */}
+            <div className="mt-8">
+              <AdSenseAd 
+                placement="footer" 
+                className="w-full"
+                fallback={
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                    <p className="text-sm text-gray-500">フッター広告スペース</p>
+                  </div>
+                }
+              />
+            </div>
+          </>
         )}
       </div>
     </div>

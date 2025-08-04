@@ -134,7 +134,7 @@ export const config = {
   
   // アプリケーション設定
   app: {
-    name: 'ヘルスケア食材アプリ',
+    name: 'クックケア',
     version: process.env.npm_package_version || '1.0.0',
     environment: detectEnvironment(),
     baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',

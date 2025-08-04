@@ -13,23 +13,23 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'ヘルナビ',
+  title: 'クックケア',
   description: '病気・症状に効果的な食材と調理法を提供するアプリケーション',
-  keywords: '健康, 食材, 栄養, 病気予防, 健康食品, 調理法, ヘルスケア',
-  authors: [{ name: 'ヘルナビチーム' }],
+  keywords: '健康, 食材, 栄養, 病気予防, 健康食品, 調理法, ヘルスケア, クックケア',
+  authors: [{ name: 'クックケアチーム' }],
   robots: 'index, follow',
-  metadataBase: new URL('https://healthcare-food-app.example.com'),
+  metadataBase: new URL('https://cookcare.example.com'),
   openGraph: {
-    title: 'ヘルナビ',
+    title: 'クックケア',
     description: '病気・症状に効果的な食材と調理法を提供するアプリケーション',
-    url: 'https://healthcare-food-app.example.com',
-    siteName: 'ヘルナビ',
+    url: 'https://cookcare.example.com',
+    siteName: 'クックケア',
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ヘルナビ',
+    title: 'クックケア',
     description: '病気・症状に効果的な食材と調理法を提供するアプリケーション',
   },
   manifest: '/manifest.json',
@@ -43,13 +43,15 @@ export default function RootLayout({
   return (
     <html lang="ja" className="h-full">
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4f46e5" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ヘルナビ" />
-        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="クックケア" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body className={`${inter.className} h-full`}>
         <Providers>
@@ -65,7 +67,7 @@ export default function RootLayout({
             <footer className="bg-white border-t mt-auto" role="contentinfo">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <p className="text-center text-sm text-gray-500">
-                  © {new Date().getFullYear()} ヘルナビ
+                  © {new Date().getFullYear()} クックケア
                 </p>
               </div>
             </footer>

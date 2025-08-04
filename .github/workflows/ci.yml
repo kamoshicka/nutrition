@@ -167,4 +167,4 @@ jobs:
       if: success()
       run: |
         echo "🚀 Production deployment successful!"
-        echo "URL: https://healthcare-food-app.vercel.app"
+        echo "URL: https://cookcare.vercel.app"

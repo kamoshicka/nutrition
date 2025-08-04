@@ -30,7 +30,7 @@ describe('RootLayout', () => {
     expect(screen.getByTestId('test-content')).toBeInTheDocument();
     
     // Check if the footer is rendered with the copyright text
-    expect(screen.getByText(/© 2024 ヘルスケア食材アプリ/)).toBeInTheDocument();
+    expect(screen.getByText(/© 2024 クックケア/)).toBeInTheDocument();
     
     // Check if the SearchHistoryProvider is used
     expect(screen.getByTestId('mock-search-history-provider')).toBeInTheDocument();

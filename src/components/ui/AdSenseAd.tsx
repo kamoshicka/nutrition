@@ -109,13 +109,22 @@ export function AdSenseAd({
     return fallback ? <>{fallback}</> : null;
   }
 
-  // Show error fallback
-  if (hasError) {
-    return fallback ? <>{fallback}</> : (
+  // Show error fallback or development placeholder
+  if (hasError || ADSENSE_CONFIG.testMode) {
+    const placeholderContent = ADSENSE_CONFIG.testMode ? (
+      <div className={`bg-blue-50 border-2 border-dashed border-blue-200 rounded-lg p-4 text-center ${className}`} style={adUnit.style}>
+        <div className="text-xs text-blue-400 mb-2">スポンサー（テストモード）</div>
+        <div className="text-sm text-blue-600 font-medium">広告プレースホルダー</div>
+        <div className="text-xs text-blue-500 mt-1">配置: {placement}</div>
+        <div className="text-xs text-blue-500">サイズ: {adUnit.style?.width} × {adUnit.style?.height}</div>
+      </div>
+    ) : (
       <div className={`bg-gray-100 border border-gray-200 rounded-lg p-4 text-center ${className}`}>
         <p className="text-sm text-gray-500">広告を読み込めませんでした</p>
       </div>
     );
+    
+    return fallback ? <>{fallback}</> : placeholderContent;
   }
 
   // Get ad attributes

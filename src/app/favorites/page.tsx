@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { FavoritesList } from '../../components/ui/FavoritesList';
 
 export const metadata: Metadata = {
-  title: 'お気に入り | ヘルスケア食材アプリ',
+  title: 'お気に入り | クックケア',
   description: 'お気に入りに追加した食材とレシピを管理できます。プレミアムプラン限定機能です。',
 };
 

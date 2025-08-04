@@ -1,8 +1,8 @@
-# ヘルスケア食材アプリ
+# クックケア (CookCare)
 
 病気・症状に対して効果的な食材と調理法、実際のレシピを提供する包括的なWebアプリケーション
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/healthcare-food-app)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/cookcare)
 
 ## 🌟 主な機能
 
@@ -43,8 +43,8 @@
 
 ### 1. リポジトリのクローン
 ```bash
-git clone https://github.com/your-username/healthcare-food-app.git
-cd healthcare-food-app
+git clone https://github.com/your-username/cookcare.git
+cd cookcare
 ```
 
 ### 2. 依存関係のインストール
@@ -77,7 +77,7 @@ http://localhost:3000 を開いてアプリケーションを確認
 ## 📁 プロジェクト構造
 
 ```
-healthcare-food-app/
+cookcare/
 ├── src/
 │   ├── app/                    # Next.js App Router
 │   │   ├── api/               # API Routes
@@ -279,7 +279,7 @@ npm run cypress -- --spec "cypress/e2e/accessibility.cy.ts"
 - **コミットメッセージ**: Conventional Commits形式
 
 ### バグレポート・機能要望
-[GitHub Issues](https://github.com/your-username/healthcare-food-app/issues) でお気軽にご報告ください。
+[GitHub Issues](https://github.com/your-username/cookcare/issues) でお気軽にご報告ください。
 
 ## 📄 ライセンス
 

@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { PremiumDashboard } from '../../components/ui/PremiumDashboard';
 
 export const metadata: Metadata = {
-  title: 'ダッシュボード | ヘルスケア食材アプリ',
+  title: 'ダッシュボード | クックケア',
   description: 'プレミアム機能の統合ダッシュボード。お気に入り、買い物リスト、栄養計算などの機能を一元管理できます。',
 };
 

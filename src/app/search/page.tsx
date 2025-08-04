@@ -10,6 +10,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import ApiErrorFallback from '@/components/ui/ApiErrorFallback';
 import SearchResultsSkeleton from '@/components/ui/skeletons/SearchResultsSkeleton';
 import { useSearchHistory } from '@/lib/search-history';
+import AdSenseAd from '@/components/ui/AdSenseAd';
 
 /**
  * SearchResultsPage component
@@ -127,6 +128,17 @@ function SearchResultsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Header Ad */}
+      <AdSenseAd 
+        placement="header" 
+        className="w-full"
+        fallback={
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-gray-500">広告スペース</p>
+          </div>
+        }
+      />
+      
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">検索結果</h1>
         
@@ -227,6 +239,19 @@ function SearchResultsPage() {
             </div>
           )}
 
+          {/* Content Ad between sections */}
+          {filteredCategories.length > 0 && filteredFoods.length > 0 && (
+            <AdSenseAd 
+              placement="content" 
+              className="w-full my-8"
+              fallback={
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center my-8">
+                  <p className="text-sm text-blue-600">コンテンツ広告</p>
+                </div>
+              }
+            />
+          )}
+
           {/* Foods section */}
           {filteredFoods.length > 0 && (
             <div>
@@ -236,6 +261,21 @@ function SearchResultsPage() {
                   <FoodCard key={food.id} food={food} />
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Footer Ad */}
+          {totalResults > 0 && (
+            <div className="mt-8">
+              <AdSenseAd 
+                placement="footer" 
+                className="w-full"
+                fallback={
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                    <p className="text-sm text-gray-500">フッター広告スペース</p>
+                  </div>
+                }
+              />
             </div>
           )}
         </>

@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://healthcare-food-app.example.com/sitemap.xml
+Sitemap: https://cookcare.example.com/sitemap.xml

@@ -52,7 +52,7 @@ describe('GlobalHeader', () => {
   test('renders header with app title and search bar', () => {
     render(<GlobalHeader />);
     
-    expect(screen.getByText('ヘルスケア食材アプリ')).toBeInTheDocument();
+    expect(screen.getByText('クックケア')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('カテゴリや食材を検索...')).toBeInTheDocument();
   });
 

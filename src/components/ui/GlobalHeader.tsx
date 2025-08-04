@@ -108,7 +108,7 @@ export default function GlobalHeader() {
                                 <div className="flex justify-between items-center h-16">
                                         <div className="flex items-center">
                                                 <Link href="/" className="text-xl font-semibold text-gray-900 hover:text-blue-600">
-                                                        ヘルスケア食材アプリ
+                                                        クックケア
                                                 </Link>
 
                                                 <nav className="hidden md:ml-8 md:flex md:space-x-4">

@@ -94,15 +94,18 @@ export const AD_UNITS: Record<string, AdUnit> = {
 export function shouldShowAds(user: any): boolean {
   // Don't show ads if AdSense is disabled
   if (!ADSENSE_CONFIG.enabled) {
+    console.log('AdSense is disabled in configuration');
     return false;
   }
 
   // Don't show ads to premium users
   if (user?.subscription?.status === 'premium') {
+    console.log('User has premium subscription, hiding ads');
     return false;
   }
 
   // Show ads to free users and unauthenticated users
+  console.log('Showing ads to user:', user ? 'authenticated' : 'unauthenticated');
   return true;
 }
 
@@ -111,6 +114,13 @@ export function shouldShowAds(user: any): boolean {
  */
 export function loadAdSenseScript(): Promise<void> {
   return new Promise((resolve, reject) => {
+    // In test mode, simulate script loading
+    if (ADSENSE_CONFIG.testMode) {
+      console.log('AdSense test mode: simulating script load');
+      setTimeout(() => resolve(), 100);
+      return;
+    }
+
     // Check if script is already loaded
     if (document.querySelector('script[src*="adsbygoogle.js"]')) {
       resolve();
@@ -122,8 +132,14 @@ export function loadAdSenseScript(): Promise<void> {
     script.crossOrigin = 'anonymous';
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CONFIG.publisherId}`;
     
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Failed to load AdSense script'));
+    script.onload = () => {
+      console.log('AdSense script loaded successfully');
+      resolve();
+    };
+    script.onerror = () => {
+      console.error('Failed to load AdSense script');
+      reject(new Error('Failed to load AdSense script'));
+    };
     
     document.head.appendChild(script);
   });
@@ -134,9 +150,18 @@ export function loadAdSenseScript(): Promise<void> {
  */
 export function initializeAd(element: HTMLElement): void {
   try {
+    // In test mode, just log the initialization
+    if (ADSENSE_CONFIG.testMode) {
+      console.log('AdSense test mode: simulating ad initialization');
+      return;
+    }
+
     // Check if adsbygoogle is available
     if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
       ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      console.log('AdSense ad initialized');
+    } else {
+      console.warn('AdSense script not loaded yet');
     }
   } catch (error) {
     console.error('Error initializing AdSense ad:', error);

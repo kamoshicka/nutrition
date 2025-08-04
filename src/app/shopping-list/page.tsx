@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { ShoppingList } from '../../components/ui/ShoppingList';
 
 export const metadata: Metadata = {
-  title: '買い物リスト | ヘルスケア食材アプリ',
+  title: '買い物リスト | クックケア',
   description: 'レシピの材料や食材を買い物リストに追加して、効率的にお買い物ができます。プレミアムプラン限定機能です。',
 };
 
