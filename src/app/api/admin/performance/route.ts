@@ -9,6 +9,9 @@ import { dbOptimizer } from '../../../../../lib/database-optimizer';
 import { errorMonitoring } from '../../../../../lib/error-monitoring';
 import { logger } from '../../../../../lib/logger';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 // Simple admin authentication
 function isAuthorized(request: NextRequest): boolean {
   const authHeader = request.headers.get('authorization');

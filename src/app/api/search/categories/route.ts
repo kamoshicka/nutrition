@@ -3,6 +3,9 @@ import { searchCategories } from '@/lib/search';
 import { ErrorResponse } from '@/types';
 import { withSearchLimits } from '../../../../middleware/search-middleware';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/search/categories?q=:query
  * Search categories by name or description

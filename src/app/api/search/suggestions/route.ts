@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSuggestedSearchTerms } from '@/lib/search';
 import { ErrorResponse } from '@/types';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/search/suggestions?q=:query
  * Get search suggestions based on query

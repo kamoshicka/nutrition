@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   getProductRecommendations, 
   trackAffiliateClick, 
@@ -115,10 +116,11 @@ export function AffiliateProducts({
               {/* Product Image */}
               <div className="aspect-square bg-gray-100 relative">
                 {product.imageUrl ? (
-                  <img
+                  <Image
                     src={product.imageUrl}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/placeholder-product.jpg';
                     }}

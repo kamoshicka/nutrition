@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { 
   getProductRecommendations, 
   trackAffiliateClick, 
@@ -102,12 +103,13 @@ export function AffiliateWidget({
               data-testid="affiliate-product"
             >
               {/* Product Image */}
-              <div className="flex-shrink-0 w-12 h-12 bg-gray-200 rounded overflow-hidden">
+              <div className="flex-shrink-0 w-12 h-12 bg-gray-200 rounded overflow-hidden relative">
                 {product.imageUrl ? (
-                  <img
+                  <Image
                     src={product.imageUrl}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/placeholder-product.jpg';
                     }}

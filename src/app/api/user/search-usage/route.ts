@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../lib/auth';
 import { canUserSearch } from '../../../../lib/search-limits';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/user/search-usage
  * Get current user's search usage information

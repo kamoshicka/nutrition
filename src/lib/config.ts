@@ -55,6 +55,16 @@ function detectEnvironment(): 'development' | 'staging' | 'production' {
   const nodeEnv = process.env.NODE_ENV;
   const vercelEnv = process.env.VERCEL_ENV;
   
+  // During build time, don't treat as production even if NODE_ENV=production
+  // This prevents build failures due to missing production-only environment variables
+  const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                      process.env.npm_lifecycle_event === 'build' ||
+                      process.argv.includes('build');
+  
+  if (isBuildTime) {
+    return 'development';
+  }
+  
   if (vercelEnv === 'production' || nodeEnv === 'production') {
     return 'production';
   } else if (vercelEnv === 'preview') {

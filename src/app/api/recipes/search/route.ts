@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { searchRecipes } from '@/lib/rakuten-recipe-api';
 import { createErrorResponse, ApiErrors } from '@/lib/api-errors';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/recipes/search
  * キーワードでレシピを検索

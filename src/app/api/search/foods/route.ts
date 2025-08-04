@@ -3,6 +3,9 @@ import { searchFoods } from '@/lib/search';
 import { ErrorResponse } from '@/types';
 import { withSearchLimits } from '../../../../middleware/search-middleware';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/search/foods?q=:query
  * Search foods by name, description, or health benefits
