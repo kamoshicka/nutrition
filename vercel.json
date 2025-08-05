@@ -2,7 +2,7 @@
   "version": 2,
   "name": "cookcare",
   "alias": ["cookcare.vercel.app"],
-  "regions": ["nrt1"],
+  "regions": ["hnd1"],
   "build": {
     "env": {
       "NODE_ENV": "production"
